@@ -1,4 +1,4 @@
-package com.example.softwarepractice;
+package com.softwarepractice;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SoftwarepracticeApplicationTests {
+public class SoftwarePracticeApplicationTests {
 
     @Test
     public void contextLoads() {

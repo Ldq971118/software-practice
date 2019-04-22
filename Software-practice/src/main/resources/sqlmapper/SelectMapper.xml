@@ -3,14 +3,13 @@
 
 <!-- 配置SQL语句，与实体类操作的对应关系。 -->
 <!-- 保证唯一性 -->
-<mapper namespace="SelectInterface">
-
+<mapper namespace="comS.softwarepractice.dao.SelectInterface">
     <!--
        将返回的数据  与对象对应。将返回的数据，按照配置组装成对应的对象。
      -->
-    <select id="selectAll"  resultType="com.softjx.model.User">
- select t_id as id,t_username as username,t_password password from t_user
-  </select>
+    <select id="SelectAdmin" resultType="com.softwarepractice.entity.Admin">
+        SELECT * From admin WHERE w_id=#{w_id};
+    </select>
 
 
 </mapper>
