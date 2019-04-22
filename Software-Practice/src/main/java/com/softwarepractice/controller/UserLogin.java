@@ -35,9 +35,13 @@ public class UserLogin {
         LoginSuccess loginSuccess;
         ErrorMessage loginError;
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
+//        System.out.println("11111");
         try {
+//            System.out.println("22222");
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-            Admin admin = selectInterface.SelectAdmin(username);
+//            System.out.println("33333");
+            Admin admin = selectInterface.SelectAdmin(username); //error
+//            System.out.println("44444");
             if (admin.getPassword().equals(passwd)) {
                 loginSuccess = new LoginSuccess(Token.createToken(username, passwd), admin.getId(),
                         admin.getW_id(), admin.getJurisdirction());

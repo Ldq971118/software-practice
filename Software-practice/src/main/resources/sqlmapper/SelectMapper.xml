@@ -3,7 +3,7 @@
 
 <!-- 配置SQL语句，与实体类操作的对应关系。 -->
 <!-- 保证唯一性 -->
-<mapper namespace="comS.softwarepractice.dao.SelectInterface">
+<mapper namespace="com.softwarepractice.dao.SelectInterface">
     <!--
        将返回的数据  与对象对应。将返回的数据，按照配置组装成对应的对象。
      -->
