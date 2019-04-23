@@ -13,7 +13,7 @@ public class Token {
     private static final String TOKEN_SECRET = "echo";
     private static final long EXPIRE_TIME = 1000 * 60 * 60 * 24 * 3;
 
-    public static String createToken(Integer username,String password) {
+    public static String createToken(Integer username,String password,Integer jurisdirction) {
         //过期时间
         Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
         //秘钥级加密算法
@@ -28,6 +28,7 @@ public class Token {
                 .withHeader(header)
                 .withClaim("username",username)
                 .withClaim("password",password)
+                .withClaim("jurisdirction",jurisdirction)
                 .withExpiresAt(date)
                 .sign(algorithm);
     }
@@ -41,5 +42,10 @@ public class Token {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static Integer GetJurisdirction(String token){
+        DecodedJWT jwt = JWT.decode(token);
+        return jwt.getClaim("jurisdirction").asInt();
     }
 }

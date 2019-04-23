@@ -30,8 +30,6 @@ public class UserLogin {
     MessageInterface Login(@RequestBody Map<String, Object> map) throws Exception {
         String username_str = (String) map.get("username");
         String passwd = (String) map.get("password");
-//        System.out.println(username_str);
-//        System.out.println(passwd);
         LoginSuccess loginSuccess;
         ErrorMessage loginError;
 
@@ -42,7 +40,7 @@ public class UserLogin {
         session.close();
 
         if (admin != null && admin.getPassword().equals(passwd)) {
-            loginSuccess = new LoginSuccess(Token.createToken(username, passwd), admin.getId(),
+            loginSuccess = new LoginSuccess(Token.createToken(username, passwd, admin.getJurisdirction()), admin.getId(),
                     admin.getW_id(), admin.getJurisdirction());
             return loginSuccess;
         } else {
