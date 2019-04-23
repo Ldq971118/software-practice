@@ -8,7 +8,11 @@
        将返回的数据  与对象对应。将返回的数据，按照配置组装成对应的对象。
      -->
     <select id="SelectAdmin" resultType="com.softwarepractice.entity.Admin">
-        SELECT * From admin WHERE w_id=#{w_id};
+        SELECT * FROM admin WHERE w_id=#{w_id}
+    </select>
+
+    <select id="FindWorkerAll" resultType="com.softwarepractice.entity.Worker">
+        SELECT * FROM worker
     </select>
 
 
