@@ -15,5 +15,26 @@
         SELECT * FROM worker
     </select>
 
+    <select id="FindFeeAll" resultType="com.softwarepractice.entity.Fee">
+        SELECT * FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{jurisdirction};
+    </select>
+
+    <select id="FindRepairAll" resultType="com.softwarepractice.entity.Repair">
+        SELECT * FROM repair,dormitory WHERE repair.d_id=dormitory.id AND dormitory.zone=#{jurisdirction};
+    </select>
+
+    <select id="FindComplaintAll" resultType="com.softwarepractice.entity.Complaint">
+        SELECT * FROM complaint
+    </select>
+
+    <select id="FindStudentAll" resultType="com.softwarepractice.entity.Student">
+        SELECT * FROM student
+    </select>
+
+    <select id="FindDormitoryAll" resultType="com.softwarepractice.entity.Dormitory">
+        SELECT * FROM dormitory
+    </select>
+
+
 
 </mapper>

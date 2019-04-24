@@ -39,7 +39,6 @@ public class WorkerManager {
             throw new Exception("Num Error");
         else {
             String token = request.getHeader("header");
-            System.out.println(token);
             if (!Token.varify(token))
                 throw new Exception("Token Error");
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
@@ -76,9 +75,10 @@ public class WorkerManager {
             Integer effect=insertInterface.InsertWorker(worker);
             session.commit();
             session.close();
-            System.out.println("影响记录条数: "+effect);
-            if(effect!=1)
+            if(effect!=1){
+                fail.setErrMsg("添加失败");
                 return fail;
+            }
             else
                 return success;
         }
@@ -101,7 +101,6 @@ public class WorkerManager {
             Integer effect=deleteInterface.DeleteWorkerById(id);
             session.commit();
             session.close();
-            System.out.println("影响记录条数: "+effect);
 
             if(effect!=1){
                 fail.setCode(404);
