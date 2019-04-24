@@ -1,4 +1,4 @@
-package com.softwarepractice.message.domitory;
+package com.softwarepractice.message.medium;
 
 import com.softwarepractice.message.MessageInterface;
 import lombok.Data;
