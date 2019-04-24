@@ -38,7 +38,7 @@ public class ComplaintManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<Complaint> complaintList = selectInterface.FindComplaintAll();
+            List<Complaint> complaintList = selectInterface.FindComplaintAll(Token.GetJurisdirction(token));
             PageInfo<Complaint> complaintPageInfo = new PageInfo<>(complaintList);
             session.close();
             return complaintPageInfo;

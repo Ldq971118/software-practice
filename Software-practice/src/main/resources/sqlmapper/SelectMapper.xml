@@ -24,7 +24,9 @@
     </select>
 
     <select id="FindComplaintAll" resultType="com.softwarepractice.entity.Complaint">
-        SELECT * FROM complaint
+        SELECT * FROM complaint,dormitory,accommendation
+        WHERE complaint.s_id=accommendation.s_id
+            AND accommendation.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
     </select>
 
     <select id="FindStudentAll" resultType="com.softwarepractice.entity.Student">
@@ -34,7 +36,6 @@
     <select id="FindDormitoryAll" resultType="com.softwarepractice.entity.Dormitory">
         SELECT * FROM dormitory
     </select>
-
 
 
 </mapper>

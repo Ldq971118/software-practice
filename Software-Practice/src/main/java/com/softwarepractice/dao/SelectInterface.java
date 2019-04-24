@@ -10,7 +10,7 @@ public interface SelectInterface {
     List<Worker> FindWorkerAll();
     List<Fee> FindFeeAll(Integer jurisdirction);
     List<Repair> FindRepairAll(Integer jurisdirction);
-    List<Complaint> FindComplaintAll();
+    List<Complaint> FindComplaintAll(Integer jurisdirction);
     List<Student> FindStudentAll();
     List<Dormitory> FindDormitoryAll();
 }
