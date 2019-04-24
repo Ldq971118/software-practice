@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="FUSUsageTrigger">
-    <session id="274702566">
-      <usages-collector id="statistics.spring.core.usages.trigger">
-        <counts>
-          <entry key="actions.SpringChangeActiveProfiles" value="3" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

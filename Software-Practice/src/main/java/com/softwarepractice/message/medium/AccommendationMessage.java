@@ -1,4 +1,4 @@
-package com.softwarepractice.message.domitory;
+package com.softwarepractice.message.medium;
 
 import com.softwarepractice.message.MessageInterface;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.Data;
 public class AccommendationMessage implements MessageInterface {
     private Integer id; //Accommendation_id
     private String name;
-    private Integer stuId; //学号
     private Integer tel;
     private Integer zone;
     private Integer building;
