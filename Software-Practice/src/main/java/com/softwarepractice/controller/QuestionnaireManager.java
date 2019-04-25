@@ -12,6 +12,10 @@ import com.softwarepractice.entity.Questionnaire;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
+import com.softwarepractice.message.questionnaire.Basic;
+import com.softwarepractice.message.questionnaire.OptionsData;
+import com.softwarepractice.message.questionnaire.QuestionnaireData;
+import com.softwarepractice.message.questionnaire.QuestionsData;
 import com.softwarepractice.message.success.SuccessMessage;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -24,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 @Controller
@@ -50,8 +54,8 @@ public class QuestionnaireManager {
 
         //basic information
         String title = jsonObject.getString("title");
-        Date startTime = jsonObject.getDate("startTime");
-        Date endTime = jsonObject.getDate("endTime");
+        String startTime = jsonObject.getString("startTime");
+        String endTime = jsonObject.getString("endTime");
         Integer workerId = jsonObject.getInteger("workerId");
         Integer zong = jsonObject.getInteger("zone");
         Integer building = jsonObject.getInteger("building");
@@ -135,9 +139,52 @@ public class QuestionnaireManager {
         String token = request.getHeader("token");
         if (!Token.varify(token))
             throw new Exception("Token Error");
+        SqlSession session = sqlSessionFactoryBean.getObject().openSession();
+        SelectInterface selectInterface = session.getMapper(SelectInterface.class);
+        Questionnaire questionnaire=selectInterface.SelectQuestionnaire(id);
 
+        //build json
 
-        return null;
+        Basic basicMessage=new Basic();
+        basicMessage.setCode(200);
+        basicMessage.setSuccess(true);
+        basicMessage.setErrMsg("");
+
+        QuestionnaireData questionnaireData=new QuestionnaireData();
+        questionnaireData.setId(questionnaire.getId());
+        questionnaireData.setStart_time(questionnaire.getStart_time());
+        questionnaireData.setEnd_time(questionnaire.getEnd_time());
+        questionnaireData.setBuilding(questionnaire.getBuilding());
+        questionnaireData.setRoom(questionnaire.getRoom());
+        questionnaireData.setTitle(questionnaire.getTitle());
+        questionnaireData.setZone(questionnaire.getZone());
+        questionnaireData.setWorkerId(questionnaire.getW_id());
+
+        List<Question> questions = selectInterface.FindQuestionAll(questionnaire.getId());
+        List<QuestionsData> questionsData=new ArrayList<>();
+
+        for(int i=0;i<questions.size();i++){
+            Question question=questions.get(i);
+            QuestionsData questionstemp=new QuestionsData();
+            questionstemp.setText(question.getContent());
+
+            List<Options> options=selectInterface.FindOptionsAll(question.getId());
+            List<OptionsData> optionsData=new ArrayList<>();
+            for(int j=0;j<options.size();j++){
+                OptionsData optionstemp=new OptionsData();
+                optionstemp.setText(options.get(j).getContent());
+                optionstemp.setSelectNum(options.get(j).getSelect_number());
+                optionsData.add(optionstemp);
+            }
+            questionstemp.setOptions(optionsData);
+            questionsData.add(questionstemp);
+        }
+
+        questionnaireData.setQuestions(questionsData);
+        basicMessage.setData(questionnaireData);
+
+        session.close();
+        return basicMessage;
     }
 
 

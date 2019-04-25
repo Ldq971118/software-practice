@@ -24,6 +24,17 @@
         INSERT INTO options(question_id,content,select_number)
         VALUES(#{question_id},#{content},#{select_number})
     </insert>
+    
+    <insert id="InsertAccommendation" parameterType="com.softwarepractice.entity.Accommendation">
+        INSERT INTO accommendation(s_id,d_id)
+        VALUES(#{s_id},#{d_id})
+    </insert>
+
+    <insert id="InsertStudent" parameterType="com.softwarepractice.entity.Student"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student(name,student_id,telephone,is_leader)
+        VALUES(#{name},#{student_id},#{telephone},#{is_leader})
+    </insert>
 
 
 </mapper>

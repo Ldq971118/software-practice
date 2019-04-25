@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * CREATE TABLE `options` (
  *   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
- *   `quextion_id` int(11) NOT NULL COMMENT '问题编号',
+ *   `question_id` int(11) NOT NULL COMMENT '问题编号',
  *   `content` varchar(32) NOT NULL COMMENT '选项内容',
  *   `select_number` int(11) NOT NULL COMMENT '已选人数',
  *   PRIMARY KEY (`id`)

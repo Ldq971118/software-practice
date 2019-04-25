@@ -4,7 +4,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.softwarepractice.dao.InsertInterface;
 import com.softwarepractice.dao.SelectInterface;
+import com.softwarepractice.entity.Accommendation;
 import com.softwarepractice.entity.Dormitory;
+import com.softwarepractice.entity.Student;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
@@ -33,7 +35,7 @@ public class DormitoryManager {
 
     @RequestMapping(value = "/saveDormitory", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface AddDormitory(@RequestBody Map<String, Object> dormitory_map, HttpServletRequest request)
+    public MessageInterface AddDormitory(@RequestBody Map<String, Object> datamap, HttpServletRequest request)
             throws Exception {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.GetJurisdirction(token);
@@ -46,19 +48,45 @@ public class DormitoryManager {
         else {
             //init Dormitory
             Dormitory dormitory = new Dormitory();
-
+            dormitory.setBuilding((Integer) datamap.get("building"));
+            dormitory.setRoom((Integer) datamap.get("room"));
+            dormitory.setZone((Integer) datamap.get("zone"));
 
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             InsertInterface insertInterface = session.getMapper(InsertInterface.class);
+            SelectInterface selectInterface = session.getMapper(SelectInterface.class);
 
+            Dormitory selectDormitory = selectInterface.SelectDormitory(dormitory);
+            if(selectDormitory==null){
+                fail.setErrMsg("宿舍不存在");
+                return fail;
+            }
 
-            int effect = 0;
-            System.out.println("影响记录条数: " + effect);
+            //插入学生
+            Student student=new Student();
+            student.setIs_leader((Integer) datamap.get("is_leader"));
+            student.setName((String)datamap.get("name"));
+            student.setStudent_id(Integer.parseInt((String)datamap.get("studentId")));
+            student.setTelephone(Integer.parseInt((String)datamap.get("tel")));
+
+            Integer effect=insertInterface.InsertStudent(student);
             if (effect != 1) {
                 fail.setErrMsg("添加失败");
                 return fail;
-            } else
-                return success;
+            }
+
+            Accommendation accommendation=new Accommendation();
+            accommendation.setD_id(selectDormitory.getId());
+            accommendation.setS_id(student.getId());
+
+            effect=insertInterface.InsertAccommendation(accommendation);
+            if (effect != 1) {
+                fail.setErrMsg("添加失败");
+                return fail;
+            }
+            session.commit();
+            session.close();
+            return success;
         }
     }
 

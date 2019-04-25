@@ -22,8 +22,8 @@ import java.util.Date;
 public class Questionnaire {
     private Integer id;
     private String title;
-    private Date start_time;
-    private Date end_time;
+    private String start_time;
+    private String end_time;
     private Integer w_id;
     private Integer zone;
     private Integer building;

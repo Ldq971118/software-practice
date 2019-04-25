@@ -29,16 +29,32 @@
             AND accommendation.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
     </select>
 
-    <select id="FindStudentAll" resultType="com.softwarepractice.entity.Student">
-        SELECT * FROM student
-    </select>
+    <!--<select id="FindStudentAll" resultType="com.softwarepractice.entity.Student">-->
+        <!--SELECT * FROM student-->
+    <!--</select>-->
 
-    <select id="FindDormitoryAll" resultType="com.softwarepractice.entity.Dormitory">
-        SELECT * FROM dormitory
-    </select>
+    <!--<select id="FindDormitoryAll" resultType="com.softwarepractice.entity.Dormitory">-->
+        <!--SELECT * FROM dormitory-->
+    <!--</select>-->
 
     <select id="FindQuestionnaireAll" resultType="com.softwarepractice.entity.Questionnaire">
         SELECT * FROM questionnaire WHERE questionnaire.zone=#{jurisdirction}
+    </select>
+
+    <select id="SelectQuestionnaire" resultType="com.softwarepractice.entity.Questionnaire">
+        SELECT * FROM questionnaire WHERE questionnaire.id=#{id}
+    </select>
+
+    <select id="FindQuestionAll" resultType="com.softwarepractice.entity.Question">
+        SELECT * FROM question WHERE question.questionnarie_id=#{questionnarie_id}
+    </select>
+
+    <select id="FindOptionsAll" resultType="com.softwarepractice.entity.Options">
+        SELECT * FROM options WHERE options.question_id=#{question_id}
+    </select>
+
+    <select id="SelectDormitory" resultType="com.softwarepractice.entity.Dormitory">
+        SELECT * FROM dormitory WHERE zone=#{zone} AND building=#{building} AND room=#{room}
     </select>
 
 

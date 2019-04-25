@@ -12,6 +12,15 @@ public interface SelectInterface {
     List<Repair> FindRepairAll(Integer jurisdirction);
     List<Complaint> FindComplaintAll(Integer jurisdirction);
     List<Questionnaire> FindQuestionnaireAll(Integer jurisdirction);
+
+    //获取问卷详细
+    Questionnaire SelectQuestionnaire(Integer id);
+    List<Question> FindQuestionAll(Integer questionnarie_id);
+    List<Options> FindOptionsAll(Integer question_id);
+
+    Dormitory SelectDormitory(Dormitory dormitory);
+
+
     List<Student> FindStudentAll();
     List<Dormitory> FindDormitoryAll();
 }
