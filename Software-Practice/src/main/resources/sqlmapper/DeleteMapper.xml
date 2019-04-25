@@ -5,7 +5,7 @@
 <mapper namespace="com.softwarepractice.dao.DeleteInterface">
 
     <insert id="DeleteWorkerById" parameterType="Integer">
-        DELETE FROM worker WHERE id=#{id};
+        DELETE FROM worker WHERE id=#{id}
     </insert>
 
 

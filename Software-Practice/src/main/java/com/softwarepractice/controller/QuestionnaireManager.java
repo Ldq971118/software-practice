@@ -2,6 +2,7 @@ package com.softwarepractice.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.softwarepractice.dao.InsertInterface;
 import com.softwarepractice.dao.SelectInterface;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 
 @Controller
@@ -36,26 +38,26 @@ public class QuestionnaireManager {
 
     @RequestMapping(value = "/postQuestionnaire", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface AddQuestionnaire(@RequestBody String params,HttpServletRequest request) throws Exception{
-        ErrorMessage fail=new ErrorMessage("问卷发布失败");
-        SuccessMessage success=new SuccessMessage();
+    public MessageInterface AddQuestionnaire(@RequestBody String params, HttpServletRequest request) throws Exception {
+        ErrorMessage fail = new ErrorMessage("问卷发布失败");
+        SuccessMessage success = new SuccessMessage();
 
         String token = request.getHeader("header");
         if (!Token.varify(token))
             throw new Exception("Token Error");
 
-        JSONObject jsonObject= JSONObject.parseObject(params);
+        JSONObject jsonObject = JSONObject.parseObject(params);
 
         //basic information
-        String title=jsonObject.getString("title");
-        Date startTime=jsonObject.getDate("startTime");
-        Date endTime=jsonObject.getDate("endTime");
-        Integer workerId=jsonObject.getInteger("workerId");
-        Integer zong=jsonObject.getInteger("zone");
-        Integer building=jsonObject.getInteger("building");
-        Integer room=jsonObject.getInteger("room");
+        String title = jsonObject.getString("title");
+        Date startTime = jsonObject.getDate("startTime");
+        Date endTime = jsonObject.getDate("endTime");
+        Integer workerId = jsonObject.getInteger("workerId");
+        Integer zong = jsonObject.getInteger("zone");
+        Integer building = jsonObject.getInteger("building");
+        Integer room = jsonObject.getInteger("room");
 
-        Questionnaire questionnaire=new Questionnaire();
+        Questionnaire questionnaire = new Questionnaire();
         questionnaire.setTitle(title);
         questionnaire.setStart_time(startTime);
         questionnaire.setEnd_time(endTime);
@@ -66,38 +68,38 @@ public class QuestionnaireManager {
 
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         InsertInterface insertInterface = session.getMapper(InsertInterface.class);
-        Integer questionnaire_effect=insertInterface.InsertQuestionnaire(questionnaire);
-        if(questionnaire_effect!=1)
+        Integer questionnaire_effect = insertInterface.InsertQuestionnaire(questionnaire);
+        if (questionnaire_effect != 1)
             return fail;
 
         //questions
-        Integer questionnarie_id=questionnaire.getId();
-        JSONArray jsonlist=jsonObject.getJSONArray("list");
+        Integer questionnarie_id = questionnaire.getId();
+        JSONArray jsonlist = jsonObject.getJSONArray("list");
         Question question;
         Options option;
-        for(int i=0;i<jsonlist.size();i++){
+        for (int i = 0; i < jsonlist.size(); i++) {
             //get question
-            question=new Question();
+            question = new Question();
             question.setQuestionnarie_id(questionnarie_id);
             question.setContent(jsonlist.getJSONObject(i).getString("title"));
             question.setType(jsonlist.getJSONObject(i).getInteger("type"));
-            Integer question_effect=insertInterface.InsertQuestion(question);
-            if(question_effect!=1)
+            Integer question_effect = insertInterface.InsertQuestion(question);
+            if (question_effect != 1)
                 return fail;
-            Integer question_id=question.getId();
+            Integer question_id = question.getId();
             //get options
-            JSONArray optionArray=jsonlist.getJSONObject(i).getJSONArray("options");
+            JSONArray optionArray = jsonlist.getJSONObject(i).getJSONArray("options");
             //填空题没有options
-            if(optionArray==null)
+            if (optionArray == null)
                 continue;
-            else{
-                for(int j=0;j<optionArray.size();j++){
-                    option=new Options();
+            else {
+                for (int j = 0; j < optionArray.size(); j++) {
+                    option = new Options();
                     option.setQuestion_id(question_id);
                     option.setSelect_number(0);
                     option.setContent(optionArray.getJSONObject(j).getString("content"));
-                    Integer option_effect=insertInterface.InsertOption(option);
-                    if(option_effect!=1)
+                    Integer option_effect = insertInterface.InsertOption(option);
+                    if (option_effect != 1)
                         return fail;
                 }
             }
@@ -110,8 +112,7 @@ public class QuestionnaireManager {
 
     @RequestMapping(value = "/getAllQuestionnaires", method = RequestMethod.GET)
     @ResponseBody
-    public PageInfo<Questionnaire> GetAllFees(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception{
-
+    public PageInfo<Questionnaire> GetAllFees(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {
@@ -120,8 +121,24 @@ public class QuestionnaireManager {
                 throw new Exception("Token Error");
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
+            PageHelper.startPage(pageNum, pageSize);
+            List<Questionnaire> questionnaireList = selectInterface.FindQuestionnaireAll(Token.GetJurisdirction(token));
+            PageInfo<Questionnaire> questionnairePageInfo = new PageInfo<>(questionnaireList);
+            session.close();
+            return questionnairePageInfo;
         }
+    }
+
+    @RequestMapping(value = "/getQuestionnaireDetail", method = RequestMethod.GET)
+    @ResponseBody
+    public MessageInterface getQuestionnaireDetail(Integer id, HttpServletRequest request) throws Exception {
+        String token = request.getHeader("token");
+        if (!Token.varify(token))
+            throw new Exception("Token Error");
+
+
         return null;
     }
+
 
 }

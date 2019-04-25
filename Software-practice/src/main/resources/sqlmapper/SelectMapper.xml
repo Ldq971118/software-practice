@@ -16,11 +16,11 @@
     </select>
 
     <select id="FindFeeAll" resultType="com.softwarepractice.entity.Fee">
-        SELECT * FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{jurisdirction};
+        SELECT * FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
     </select>
 
     <select id="FindRepairAll" resultType="com.softwarepractice.entity.Repair">
-        SELECT * FROM repair,dormitory WHERE repair.d_id=dormitory.id AND dormitory.zone=#{jurisdirction};
+        SELECT * FROM repair,dormitory WHERE repair.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
     </select>
 
     <select id="FindComplaintAll" resultType="com.softwarepractice.entity.Complaint">
@@ -36,6 +36,11 @@
     <select id="FindDormitoryAll" resultType="com.softwarepractice.entity.Dormitory">
         SELECT * FROM dormitory
     </select>
+
+    <select id="FindQuestionnaireAll" resultType="com.softwarepractice.entity.Questionnaire">
+        SELECT * FROM questionnaire WHERE questionnaire.zone=#{jurisdirction}
+    </select>
+
 
 
 </mapper>
