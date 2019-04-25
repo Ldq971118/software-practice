@@ -1,6 +1,5 @@
 package com.softwarepractice.function;
 
-import com.softwarepractice.controller.WorkerManager;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,7 +11,7 @@ public class AllExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public MessageInterface UserLoginExceptionHandler(Exception t) {
+    public MessageInterface MyExceptionHandler(Exception t) {
         ErrorMessage errorMessage;
         if (t.getMessage().equals("Num Error"))
             errorMessage = new ErrorMessage("参数[pageNum]错误，不能是负数");

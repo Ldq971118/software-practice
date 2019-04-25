@@ -2,11 +2,13 @@ package com.softwarepractice.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.softwarepractice.dao.InsertInterface;
 import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.entity.Options;
 import com.softwarepractice.entity.Question;
 import com.softwarepractice.entity.Questionnaire;
+import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
 import com.softwarepractice.message.success.SuccessMessage;
@@ -15,14 +17,14 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
 
 @Controller
 @RequestMapping("/api/web/questionnaires")
@@ -32,12 +34,18 @@ public class QuestionnaireManager {
     @Qualifier("sqlSessionFactory")
     private SqlSessionFactoryBean sqlSessionFactoryBean;
 
-    @RequestMapping(value = "/postQuestionnaire", method = RequestMethod.GET)
+    @RequestMapping(value = "/postQuestionnaire", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface AddQuestionnaire(String params) throws Exception{
+    public MessageInterface AddQuestionnaire(@RequestBody String params,HttpServletRequest request) throws Exception{
         ErrorMessage fail=new ErrorMessage("问卷发布失败");
         SuccessMessage success=new SuccessMessage();
+
+        String token = request.getHeader("header");
+        if (!Token.varify(token))
+            throw new Exception("Token Error");
+
         JSONObject jsonObject= JSONObject.parseObject(params);
+
         //basic information
         String title=jsonObject.getString("title");
         Date startTime=jsonObject.getDate("startTime");
@@ -61,6 +69,7 @@ public class QuestionnaireManager {
         Integer questionnaire_effect=insertInterface.InsertQuestionnaire(questionnaire);
         if(questionnaire_effect!=1)
             return fail;
+
         //questions
         Integer questionnarie_id=questionnaire.getId();
         JSONArray jsonlist=jsonObject.getJSONArray("list");
@@ -95,7 +104,24 @@ public class QuestionnaireManager {
         }
         session.commit();
         session.close();
+
         return success;
+    }
+
+    @RequestMapping(value = "/getAllQuestionnaires", method = RequestMethod.GET)
+    @ResponseBody
+    public PageInfo<Questionnaire> GetAllFees(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception{
+
+        if (pageNum < 0 || pageSize <= 0)
+            throw new Exception("Num Error");
+        else {
+            String token = request.getHeader("header");
+            if (!Token.varify(token))
+                throw new Exception("Token Error");
+            SqlSession session = sqlSessionFactoryBean.getObject().openSession();
+            SelectInterface selectInterface = session.getMapper(SelectInterface.class);
+        }
+        return null;
     }
 
 }
