@@ -116,7 +116,7 @@ public class QuestionnaireManager {
 
     @RequestMapping(value = "/getAllQuestionnaires", method = RequestMethod.GET)
     @ResponseBody
-    public PageInfo<Questionnaire> GetAllFees(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
+    public PageInfo<Questionnaire> GetAllQuestionnaire(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {

@@ -8,5 +8,9 @@
         DELETE FROM worker WHERE id=#{id}
     </insert>
 
+    <insert id="DeleteAccommendation" parameterType="Integer">
+        DELETE FROM accommendation WHERE id=#{id}
+    </insert>
+
 
 </mapper>

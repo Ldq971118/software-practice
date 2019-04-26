@@ -29,14 +29,6 @@
             AND accommendation.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
     </select>
 
-    <!--<select id="FindStudentAll" resultType="com.softwarepractice.entity.Student">-->
-        <!--SELECT * FROM student-->
-    <!--</select>-->
-
-    <!--<select id="FindDormitoryAll" resultType="com.softwarepractice.entity.Dormitory">-->
-        <!--SELECT * FROM dormitory-->
-    <!--</select>-->
-
     <select id="FindQuestionnaireAll" resultType="com.softwarepractice.entity.Questionnaire">
         SELECT * FROM questionnaire WHERE questionnaire.zone=#{jurisdirction}
     </select>
@@ -55,6 +47,16 @@
 
     <select id="SelectDormitory" resultType="com.softwarepractice.entity.Dormitory">
         SELECT * FROM dormitory WHERE zone=#{zone} AND building=#{building} AND room=#{room}
+    </select>
+
+    <select id="SelectStudent" resultType="com.softwarepractice.entity.Student">
+        SELECT * FROM student WHERE student_id=#{student_id}
+    </select>
+
+    <select id="FindAccommendationAll" resultType="com.softwarepractice.message.medium.AccommendationMessage">
+        SELECT a.id,s.name,s.student_id,s.telephone,d.zone,d.building,d.room
+        FROM dormitory d,accommendation a,student s
+        WHERE d.id=a.d_id AND a.s_id=s.id AND d.zone=#{zone}
     </select>
 
 
