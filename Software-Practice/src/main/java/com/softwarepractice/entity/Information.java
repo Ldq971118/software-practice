@@ -23,7 +23,7 @@ public class Information {
     private Integer id;
     private String title;
     private String content;
-    private Date time;
+    private String time;
     private Integer w_id;
     private Integer zone;
     private Integer building;

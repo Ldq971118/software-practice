@@ -12,6 +12,11 @@
         WHERE id=#{id}
     </update>
 
+    <update id="UpdateInformation" parameterType="com.softwarepractice.entity.Information">
+        UPDATE information SET title=#{title},content=#{content},time=#{time}
+        WHERE id=#{id}
+    </update>
+
 
 
 </mapper>

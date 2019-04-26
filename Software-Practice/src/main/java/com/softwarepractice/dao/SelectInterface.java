@@ -2,6 +2,7 @@ package com.softwarepractice.dao;
 
 import com.softwarepractice.entity.*;
 import com.softwarepractice.message.medium.AccommendationMessage;
+import com.softwarepractice.message.medium.InformationsMessage;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
@@ -22,6 +23,10 @@ public interface SelectInterface {
     Dormitory SelectDormitory(Dormitory dormitory);
     Student SelectStudent(Student student);
     List<AccommendationMessage> FindAccommendationAll(Integer zone);
+
+    List<Information> FindInformationAll();
+    Worker SelectWorker(Integer w_id);
+    Information SelectInformation(Integer id);
 
 //    List<Student> FindStudentAll();
 //    List<Dormitory> FindDormitoryAll();

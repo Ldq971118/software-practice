@@ -59,6 +59,17 @@
         WHERE d.id=a.d_id AND a.s_id=s.id AND d.zone=#{zone}
     </select>
 
+    <select id="FindInformationAll" resultType="com.softwarepractice.entity.Information">
+        SELECT * FROM information
+    </select>
+
+    <select id="SelectWorker" resultType="com.softwarepractice.entity.Worker">
+        SELECT * FROM worker WHERE worker_id=#{worker_id}
+    </select>
+
+    <select id="SelectInformation" resultType="com.softwarepractice.entity.Information">
+        SELECT * FROM information WHERE id=#{id}
+    </select>
 
 
 </mapper>
