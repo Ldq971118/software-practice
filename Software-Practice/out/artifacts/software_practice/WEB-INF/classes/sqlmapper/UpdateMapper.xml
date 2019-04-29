@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- 配置SQL语句，与实体类操作的对应关系。 -->
+<!-- 保证唯一性 -->
+<mapper namespace="com.softwarepractice.dao.UpdateInterface">
+    <!--
+       将返回的数据  与对象对应。将返回的数据，按照配置组装成对应的对象。
+     -->
+    <update id="UpdateAccommendation" parameterType="com.softwarepractice.entity.Accommendation">
+        UPDATE accommendation SET d_id=#{d_id}
+        WHERE id=#{id}
+    </update>
+
+    <update id="UpdateInformation" parameterType="com.softwarepractice.entity.Information">
+        UPDATE information SET title=#{title},content=#{content},time=#{time}
+        WHERE id=#{id}
+    </update>
+
+
+
+</mapper>

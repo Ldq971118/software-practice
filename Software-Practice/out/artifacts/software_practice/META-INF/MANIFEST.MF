@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: software-practice
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: Ldq
+Implementation-Vendor-Id: com
+Created-By: IntelliJ IDEA
+Build-Jdk: 1.8.0_192
+Main-Class: ${start-class}
+

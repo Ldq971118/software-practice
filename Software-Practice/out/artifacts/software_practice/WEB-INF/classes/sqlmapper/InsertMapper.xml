@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.softwarepractice.dao.InsertInterface">
+
+    <insert id="InsertWorker" parameterType="com.softwarepractice.entity.Worker">
+        INSERT INTO worker(name,worker_id,telephone,type) VALUES(#{name},#{worker_id},#{telephone},#{type})
+    </insert>
+    
+    <insert id="InsertQuestionnaire" parameterType="com.softwarepractice.entity.Questionnaire"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO questionnaire(title,start_time,end_time,w_id,zone,building,room)
+        VALUES(#{title},#{start_time},#{end_time},#{w_id},#{zone},#{building},#{room})
+    </insert>
+
+    <insert id="InsertQuestion" parameterType="com.softwarepractice.entity.Question"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question(questionnarie_id,content,type)
+        VALUES(#{questionnarie_id},#{content},#{type})
+    </insert>
+
+    <insert id="InsertOption" parameterType="com.softwarepractice.entity.Options">
+        INSERT INTO options(question_id,content,select_number)
+        VALUES(#{question_id},#{content},#{select_number})
+    </insert>
+    
+    <insert id="InsertAccommendation" parameterType="com.softwarepractice.entity.Accommendation">
+        INSERT INTO accommendation(s_id,d_id)
+        VALUES(#{s_id},#{d_id})
+    </insert>
+
+    <insert id="InsertStudent" parameterType="com.softwarepractice.entity.Student"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student(name,student_id,telephone,is_leader)
+        VALUES(#{name},#{student_id},#{telephone},#{is_leader})
+    </insert>
+
+
+</mapper>

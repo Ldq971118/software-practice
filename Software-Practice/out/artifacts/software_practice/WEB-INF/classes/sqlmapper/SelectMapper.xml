@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- 配置SQL语句，与实体类操作的对应关系。 -->
+<!-- 保证唯一性 -->
+<mapper namespace="com.softwarepractice.dao.SelectInterface">
+    <!--
+       将返回的数据  与对象对应。将返回的数据，按照配置组装成对应的对象。
+     -->
+    <select id="SelectAdmin" resultType="com.softwarepractice.entity.Admin">
+        SELECT * FROM admin WHERE w_id=#{w_id}
+    </select>
+
+    <select id="FindWorkerAll" resultType="com.softwarepractice.entity.Worker">
+        SELECT * FROM worker
+    </select>
+
+    <select id="FindFeeAll" resultType="com.softwarepractice.entity.Fee">
+        SELECT * FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
+    </select>
+
+    <select id="FindRepairAll" resultType="com.softwarepractice.entity.Repair">
+        SELECT * FROM repair,dormitory WHERE repair.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
+    </select>
+
+    <select id="FindComplaintAll" resultType="com.softwarepractice.entity.Complaint">
+        SELECT * FROM complaint,dormitory,accommendation
+        WHERE complaint.s_id=accommendation.s_id
+            AND accommendation.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
+    </select>
+
+    <select id="FindQuestionnaireAll" resultType="com.softwarepractice.entity.Questionnaire">
+        SELECT * FROM questionnaire WHERE questionnaire.zone=#{jurisdirction}
+    </select>
+
+    <select id="SelectQuestionnaire" resultType="com.softwarepractice.entity.Questionnaire">
+        SELECT * FROM questionnaire WHERE questionnaire.id=#{id}
+    </select>
+
+    <select id="FindQuestionAll" resultType="com.softwarepractice.entity.Question">
+        SELECT * FROM question WHERE question.questionnarie_id=#{questionnarie_id}
+    </select>
+
+    <select id="FindOptionsAll" resultType="com.softwarepractice.entity.Options">
+        SELECT * FROM options WHERE options.question_id=#{question_id}
+    </select>
+
+    <select id="SelectDormitory" resultType="com.softwarepractice.entity.Dormitory">
+        SELECT * FROM dormitory WHERE zone=#{zone} AND building=#{building} AND room=#{room}
+    </select>
+
+    <select id="SelectStudent" resultType="com.softwarepractice.entity.Student">
+        SELECT * FROM student WHERE student_id=#{student_id}
+    </select>
+
+    <select id="FindAccommendationAll" resultType="com.softwarepractice.message.medium.AccommendationMessage">
+        SELECT a.id,s.name,s.student_id,s.telephone,d.zone,d.building,d.room
+        FROM dormitory d,accommendation a,student s
+        WHERE d.id=a.d_id AND a.s_id=s.id AND d.zone=#{zone}
+    </select>
+
+    <select id="FindInformationAll" resultType="com.softwarepractice.entity.Information">
+        SELECT * FROM information
+    </select>
+
+    <select id="SelectWorker" resultType="com.softwarepractice.entity.Worker">
+        SELECT * FROM worker WHERE worker_id=#{worker_id}
+    </select>
+
+    <select id="SelectInformation" resultType="com.softwarepractice.entity.Information">
+        SELECT * FROM information WHERE id=#{id}
+    </select>
+
+
+</mapper>
