@@ -42,7 +42,7 @@ public class InformationManager {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {
-            String token = request.getHeader("header");
+            String token = request.getHeader("token");
             if (!Token.varify(token))
                 throw new Exception("Token Error");
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();

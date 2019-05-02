@@ -46,7 +46,7 @@ public class QuestionnaireManager {
         ErrorMessage fail = new ErrorMessage("问卷发布失败");
         SuccessMessage success = new SuccessMessage();
 
-        String token = request.getHeader("header");
+        String token = request.getHeader("token");
         if (!Token.varify(token))
             throw new Exception("Token Error");
 
@@ -120,7 +120,7 @@ public class QuestionnaireManager {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {
-            String token = request.getHeader("header");
+            String token = request.getHeader("token");
             if (!Token.varify(token))
                 throw new Exception("Token Error");
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
