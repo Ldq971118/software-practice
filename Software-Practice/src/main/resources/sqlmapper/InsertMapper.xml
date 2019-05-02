@@ -36,5 +36,11 @@
         VALUES(#{name},#{student_id},#{telephone},#{is_leader})
     </insert>
 
+    <insert id="InsertInformation" parameterType="com.softwarepractice.entity.Information"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO information(title,content,time,w_id,zone,building,room)
+        VALUES(#{title},#{content},#{time},#{w_id},#{zone},#{building},#{room})
+    </insert>
+
 
 </mapper>

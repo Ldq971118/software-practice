@@ -48,4 +48,10 @@ public class Token {
         DecodedJWT jwt = JWT.decode(token);
         return jwt.getClaim("jurisdirction").asInt();
     }
+
+    public static Integer GetUsername(String token){
+        DecodedJWT jwt = JWT.decode(token);
+        return jwt.getClaim("username").asInt();
+    }
+
 }

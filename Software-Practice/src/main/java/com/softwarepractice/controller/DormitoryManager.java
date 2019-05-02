@@ -13,16 +13,14 @@ import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
 import com.softwarepractice.message.medium.AccommendationMessage;
+import com.softwarepractice.message.medium.Response;
 import com.softwarepractice.message.success.SuccessMessage;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -30,6 +28,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/web/dormitory")
+@CrossOrigin
 public class DormitoryManager {
 
     @Autowired
@@ -100,7 +99,7 @@ public class DormitoryManager {
 
     @RequestMapping(value = "/getAllDormitories", method = RequestMethod.GET)
     @ResponseBody
-    public PageInfo<AccommendationMessage> GetAllDormitories(Integer pageNum, Integer pageSize, HttpServletRequest request)
+    public MessageInterface GetAllDormitories(Integer pageNum, Integer pageSize, HttpServletRequest request)
             throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
@@ -115,8 +114,9 @@ public class DormitoryManager {
                     selectInterface.FindAccommendationAll(Token.GetJurisdirction(token));
             PageInfo<AccommendationMessage> accommendationMessagePageInfo =
                     new PageInfo<>(accommendationAll);
+            Response response=new Response(accommendationMessagePageInfo);
             session.close();
-            return accommendationMessagePageInfo;
+            return response;
         }
 
     }

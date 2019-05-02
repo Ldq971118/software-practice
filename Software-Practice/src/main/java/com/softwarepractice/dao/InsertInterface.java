@@ -11,4 +11,5 @@ public interface InsertInterface {
     Integer InsertOption(Options option);
     Integer InsertAccommendation(Accommendation accommendation);
     Integer InsertStudent(Student student);
+    Integer InsertInformation(Information information);
 }

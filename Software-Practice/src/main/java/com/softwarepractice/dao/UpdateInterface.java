@@ -7,4 +7,6 @@ public interface UpdateInterface {
     Integer UpdateAccommendation(Accommendation accommendation);
 
     Integer UpdateInformation(Information information);
+
+    Integer UpdateRepairStatus(Integer id,Integer status);
 }

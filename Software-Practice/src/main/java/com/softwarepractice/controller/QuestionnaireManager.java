@@ -12,6 +12,7 @@ import com.softwarepractice.entity.Questionnaire;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
+import com.softwarepractice.message.medium.Response;
 import com.softwarepractice.message.questionnaire.Basic;
 import com.softwarepractice.message.questionnaire.OptionsData;
 import com.softwarepractice.message.questionnaire.QuestionnaireData;
@@ -22,10 +23,7 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -34,6 +32,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/api/web/questionnaires")
+@CrossOrigin
 public class QuestionnaireManager {
 
     @Autowired
@@ -116,7 +115,7 @@ public class QuestionnaireManager {
 
     @RequestMapping(value = "/getAllQuestionnaires", method = RequestMethod.GET)
     @ResponseBody
-    public PageInfo<Questionnaire> GetAllQuestionnaire(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
+    public MessageInterface GetAllQuestionnaire(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {
@@ -128,8 +127,9 @@ public class QuestionnaireManager {
             PageHelper.startPage(pageNum, pageSize);
             List<Questionnaire> questionnaireList = selectInterface.FindQuestionnaireAll(Token.GetJurisdirction(token));
             PageInfo<Questionnaire> questionnairePageInfo = new PageInfo<>(questionnaireList);
+            Response response=new Response(questionnairePageInfo);
             session.close();
-            return questionnairePageInfo;
+            return response;
         }
     }
 

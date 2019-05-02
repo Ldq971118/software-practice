@@ -10,7 +10,7 @@ import java.util.Date;
  *   `d_id` int(11) NOT NULL COMMENT '宿舍编号',
  *   `last_month_quantity` float NOT NULL COMMENT '上月读数',
  *   `current_month_quantity` float NOT NULL COMMENT '本月读数',
- *   `state_time` date NOT NULL COMMENT '费用起始时间',
+ *   `start_time` date NOT NULL COMMENT '费用起始时间',
  *   `end_time` date NOT NULL COMMENT '费用终止时间',
  *   `unit_price` float NOT NULL COMMENT '费用单价',
  *   `free_quantity` float NOT NULL COMMENT '减免额度',
@@ -27,12 +27,11 @@ public class Fee {
     private Integer d_id;
     private Float last_month_quantity;
     private Float current_month_quantity;
-    private Date state_time;
-    private Date end_time;
+    private String start_time;
+    private String end_time;
     private Float unit_price;
     private Float free_quantity;
     private Float amount;
     private Integer status;
     private Integer type;
-
 }

@@ -6,11 +6,14 @@ import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.entity.Complaint;
 import com.softwarepractice.entity.Repair;
 import com.softwarepractice.function.Token;
+import com.softwarepractice.message.MessageInterface;
+import com.softwarepractice.message.medium.Response;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +23,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/web/complaint")
+@CrossOrigin
 public class ComplaintManager {
 
     @Autowired
@@ -28,7 +32,7 @@ public class ComplaintManager {
 
     @RequestMapping(value = "/getAllComplaints", method = RequestMethod.GET)
     @ResponseBody
-    public PageInfo<Complaint> GetAllComplaints(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
+    public MessageInterface GetAllComplaints(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {
@@ -40,8 +44,9 @@ public class ComplaintManager {
             PageHelper.startPage(pageNum, pageSize);
             List<Complaint> complaintList = selectInterface.FindComplaintAll(Token.GetJurisdirction(token));
             PageInfo<Complaint> complaintPageInfo = new PageInfo<>(complaintList);
+            Response response=new Response(complaintPageInfo);
             session.close();
-            return complaintPageInfo;
+            return response;
         }
     }
 }

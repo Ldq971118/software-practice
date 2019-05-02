@@ -7,6 +7,7 @@
     <!--
        将返回的数据  与对象对应。将返回的数据，按照配置组装成对应的对象。
      -->
+
     <select id="SelectAdmin" resultType="com.softwarepractice.entity.Admin">
         SELECT * FROM admin WHERE w_id=#{w_id}
     </select>
@@ -15,9 +16,32 @@
         SELECT * FROM worker
     </select>
 
-    <select id="FindFeeAll" resultType="com.softwarepractice.entity.Fee">
-        SELECT * FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
+    <select id="FindFeeByType" resultMap="feeMessage">
+        SELECT fee.id,fee.start_time,fee.end_time,fee.amount,fee.status,fee.type,
+        dormitory.id dorm_id,dormitory.zone,dormitory.building,dormitory.room
+        FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{param1} AND fee.type=#{param2}
     </select>
+
+    <select id="FindFeeAll" resultMap="feeMessage">
+        SELECT fee.id,fee.start_time,fee.end_time,fee.amount,fee.status,fee.type,
+        dormitory.id dorm_id,dormitory.zone,dormitory.building,dormitory.room
+        FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{param1}
+    </select>
+
+    <resultMap id="feeMessage" type="com.softwarepractice.message.fee.feeMessage">
+        <id column="id" property="id"/>
+        <result column="start_time" property="start_time"/>
+        <result column="end_time" property="end_time"/>
+        <result column="amount" property="amount"/>
+        <result column="status" property="status"/>
+        <result column="type" property="type"/>
+        <association property="dorm" javaType="com.softwarepractice.entity.Dormitory">
+            <id column="dorm_id" property="id"/>
+            <result column="zone" property="zone"/>
+            <result column="building" property="building"/>
+            <result column="room" property="room"/>
+        </association>
+    </resultMap>
 
     <select id="FindRepairAll" resultType="com.softwarepractice.entity.Repair">
         SELECT * FROM repair,dormitory WHERE repair.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
@@ -49,6 +73,10 @@
         SELECT * FROM dormitory WHERE zone=#{zone} AND building=#{building} AND room=#{room}
     </select>
 
+    <select id="SelectDormitoryById" resultType="com.softwarepractice.entity.Dormitory">
+        SELECT * FROM dormitory WHERE id=#{id}
+    </select>
+
     <select id="SelectStudent" resultType="com.softwarepractice.entity.Student">
         SELECT * FROM student WHERE student_id=#{student_id}
     </select>
@@ -64,11 +92,24 @@
     </select>
 
     <select id="SelectWorker" resultType="com.softwarepractice.entity.Worker">
-        SELECT * FROM worker WHERE worker_id=#{worker_id}
+        SELECT * FROM worker WHERE id=#{id}
     </select>
 
     <select id="SelectInformation" resultType="com.softwarepractice.entity.Information">
         SELECT * FROM information WHERE id=#{id}
+    </select>
+
+    <select id="FindStudentByDorm" resultType="com.softwarepractice.entity.Student">
+        SELECT s.id,s.open_id
+        FROM accommendation a,student s WHERE a.d_id=#{dorm_id} AND a.s_id=s.id
+    </select>
+
+    <select id="FindPushBySid" resultType="com.softwarepractice.entity.Push">
+        SELECT * FROM push WHERE s_id=#{s_id}
+    </select>
+
+    <select id="FindStudentAll" resultType="com.softwarepractice.entity.Student">
+        SELECT id,open_id FROM student
     </select>
 
 

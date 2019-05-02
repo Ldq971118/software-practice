@@ -1,11 +1,5 @@
 package com.softwarepractice;
 
-import com.softwarepractice.dao.SelectInterface;
-import com.softwarepractice.entity.Admin;
-import com.softwarepractice.function.Token;
-import com.softwarepractice.message.error.ErrorMessage;
-import com.softwarepractice.message.login.LoginSuccess;
-import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -27,13 +21,7 @@ public class SoftwarePracticeApplicationTests {
     }
 
     @Test
-    public void mybatistest(){
-        try {
-            SqlSession session = sqlSessionFactoryBean.getObject().openSession();
-            SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+    public void mybatistest() throws Exception{
     }
 
 }
