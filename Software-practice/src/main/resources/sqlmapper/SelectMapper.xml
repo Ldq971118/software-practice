@@ -9,7 +9,8 @@
      -->
 
     <select id="SelectAdmin" resultType="com.softwarepractice.entity.Admin">
-        SELECT * FROM admin WHERE w_id=#{w_id}
+        SELECT * FROM admin,worker WHERE admin.w_id=worker.id
+        AND worker.worker_id=#{worker_id}
     </select>
 
     <select id="FindWorkerAll" resultType="com.softwarepractice.entity.Worker">
@@ -19,13 +20,19 @@
     <select id="FindFeeByType" resultMap="feeMessage">
         SELECT fee.id,fee.start_time,fee.end_time,fee.amount,fee.status,fee.type,
         dormitory.id dorm_id,dormitory.zone,dormitory.building,dormitory.room
-        FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{param1} AND fee.type=#{param2}
+        FROM fee,dormitory WHERE fee.d_id=dormitory.id AND fee.type=#{param2}
+        <if test="jurisdirction != 0" >
+            AND dormitory.zone=#{jurisdirction}
+        </if>
     </select>
 
     <select id="FindFeeAll" resultMap="feeMessage">
         SELECT fee.id,fee.start_time,fee.end_time,fee.amount,fee.status,fee.type,
         dormitory.id dorm_id,dormitory.zone,dormitory.building,dormitory.room
-        FROM fee,dormitory WHERE fee.d_id=dormitory.id AND dormitory.zone=#{param1}
+        FROM fee,dormitory WHERE fee.d_id=dormitory.id
+        <if test="jurisdirction != 0" >
+            AND dormitory.zone=#{jurisdirction}
+        </if>
     </select>
 
     <resultMap id="feeMessage" type="com.softwarepractice.message.fee.feeMessage">
@@ -44,17 +51,29 @@
     </resultMap>
 
     <select id="FindRepairAll" resultType="com.softwarepractice.entity.Repair">
-        SELECT * FROM repair,dormitory WHERE repair.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
+        SELECT * FROM repair,dormitory WHERE repair.d_id=dormitory.id
+        <if test="jurisdirction != 0" >
+            AND dormitory.zone=#{jurisdirction}
+        </if>
+        ORDER BY status ASC
     </select>
 
     <select id="FindComplaintAll" resultType="com.softwarepractice.entity.Complaint">
         SELECT * FROM complaint,dormitory,accommendation
         WHERE complaint.s_id=accommendation.s_id
-            AND accommendation.d_id=dormitory.id AND dormitory.zone=#{jurisdirction}
+            AND accommendation.d_id=dormitory.id
+        <if test="jurisdirction != 0" >
+            AND dormitory.zone=#{jurisdirction}
+        </if>
+        ORDER BY status ASC
     </select>
 
     <select id="FindQuestionnaireAll" resultType="com.softwarepractice.entity.Questionnaire">
-        SELECT * FROM questionnaire WHERE questionnaire.zone=#{jurisdirction}
+        SELECT * FROM questionnaire
+        <if test="jurisdirction != 0" >
+            WHERE questionnaire.zone=#{jurisdirction}
+        </if>
+        ORDER BY id DESC
     </select>
 
     <select id="SelectQuestionnaire" resultType="com.softwarepractice.entity.Questionnaire">
@@ -62,7 +81,7 @@
     </select>
 
     <select id="FindQuestionAll" resultType="com.softwarepractice.entity.Question">
-        SELECT * FROM question WHERE question.questionnarie_id=#{questionnarie_id}
+        SELECT * FROM question WHERE question.questionnaire_id=#{questionnaire_id}
     </select>
 
     <select id="FindOptionsAll" resultType="com.softwarepractice.entity.Options">
@@ -84,24 +103,44 @@
     <select id="FindAccommendationAll" resultType="com.softwarepractice.message.medium.AccommendationMessage">
         SELECT a.id,s.name,s.student_id,s.telephone,d.zone,d.building,d.room
         FROM dormitory d,accommendation a,student s
-        WHERE d.id=a.d_id AND a.s_id=s.id AND d.zone=#{zone}
+        WHERE d.id=a.d_id AND a.s_id=s.id
+        <if test="zone != 0" >
+            AND d.zone=#{zone}
+        </if>
     </select>
 
-    <select id="FindInformationAll" resultType="com.softwarepractice.entity.Information">
-        SELECT * FROM information
+    <resultMap id="Information" type="com.softwarepractice.message.medium.InformationsMessage">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="time" property="time"/>
+        <result column="w_id" property="w_id"/>
+        <result column="zone" property="zone"/>
+        <result column="building" property="building"/>
+        <result column="room" property="room"/>
+        <association property="worker" javaType="com.softwarepractice.message.medium.Informations_Worker">
+            <id column="wid" property="id"/>
+            <result column="name" property="name"/>
+            <result column="telephone" property="telephone"/>
+        </association>
+    </resultMap>
+
+    <select id="FindInformationAll" resultMap="Information">
+        SELECT i.id,i.title,i.content,i.time,i.w_id,i.zone,i.building,i.room,w.id wid,w.name,w.telephone
+        FROM information i,worker w
+        WHERE i.w_id=w.id
     </select>
 
     <select id="SelectWorker" resultType="com.softwarepractice.entity.Worker">
+        SELECT * FROM worker WHERE worker_id=#{worker_id}
+    </select>
+
+    <select id="SelectWorkerById" resultType="com.softwarepractice.entity.Worker">
         SELECT * FROM worker WHERE id=#{id}
     </select>
 
     <select id="SelectInformation" resultType="com.softwarepractice.entity.Information">
         SELECT * FROM information WHERE id=#{id}
-    </select>
-
-    <select id="FindStudentByDorm" resultType="com.softwarepractice.entity.Student">
-        SELECT s.id,s.open_id
-        FROM accommendation a,student s WHERE a.d_id=#{dorm_id} AND a.s_id=s.id
     </select>
 
     <select id="FindPushBySid" resultType="com.softwarepractice.entity.Push">
@@ -110,6 +149,22 @@
 
     <select id="FindStudentAll" resultType="com.softwarepractice.entity.Student">
         SELECT id,open_id FROM student
+    </select>
+
+    <!-- zone building room -->
+    <select id="FindStudentBySome" resultType="com.softwarepractice.entity.Student">
+        SELECT s.id,s.open_id
+        FROM student s,accommendation a,dormitory d
+        WHERE a.d_id=d.id AND a.s_id=s.id
+        <if test="zone!=null">
+            AND d.zone=#{zone}
+        </if>
+        <if test="building!=null">
+            AND d.building=#{building}
+        </if>
+        <if test="room!=null">
+            AND d.room=#{room}
+        </if>
     </select>
 
 

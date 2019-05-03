@@ -2,21 +2,27 @@ package com.softwarepractice.function;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.softwarepractice.dao.DeleteInterface;
 import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.entity.Information;
 import com.softwarepractice.entity.Push;
 import com.softwarepractice.entity.Student;
 import com.softwarepractice.message.wx.TemplateData;
 import com.softwarepractice.message.wx.WxMssVo;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -66,12 +72,13 @@ public class PostInformation {
         access_token = jsonObject.getString("access_token");
     }
 
-    public void PostOneDorm(Integer dorm_id, Information information) {
+    public void PostOneDorm(Information information) {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             URL url = new URL("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=" + access_token);
             SelectInterface selectInterface = sqlSession.getMapper(SelectInterface.class);
-            List<Student> students = selectInterface.FindStudentByDorm(dorm_id);
+            List<Student> students = selectInterface.FindStudentBySome(information.getZone(),
+                    information.getBuilding(),information.getRoom());
             if (students == null)
                 return;
             for (int i = 0; i < students.size(); i++) {
@@ -80,10 +87,12 @@ public class PostInformation {
                 WxMssVo wxMssVo = new WxMssVo();
 
                 List<Push> pushs = selectInterface.FindPushBySid(student.getId());
-                if ((pushs == null) || (student.getOpen_id() == null))
+                if ((pushs.isEmpty()) || (student.getOpen_id() == null))
                     continue;
-
+                DeleteInterface deleteInterface=sqlSession.getMapper(DeleteInterface.class);
                 Push push = pushs.get(0);
+                deleteInterface.DeletePush(push.getId());
+                sqlSession.commit();
                 if(push.getForm_id() == null)
                     continue;
                 wxMssVo.setTouser(student.getOpen_id());//用户openid
@@ -97,27 +106,27 @@ public class PostInformation {
                 m.put("keyword1", keyword1);
 
                 TemplateData keyword2 = new TemplateData();
-                keyword2.setValue(information.getTime());
+                keyword2.setValue("物业管理员");
                 m.put("keyword2", keyword2);
+
+                TemplateData keyword3 = new TemplateData();
+                keyword3.setValue(information.getTime());
+                m.put("keyword3", keyword3);
                 wxMssVo.setData(m);
 
-
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                connection.connect();
-                OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
-
-                out.append(JSON.toJSONString(wxMssVo));
-                out.flush();
-                out.close();
-
-                // 关闭链接
-                connection.disconnect();
+                HttpClient client =HttpClientBuilder.create().build();//构建一个Client
+                HttpPost post = new HttpPost(url.toString());//构建一个POST请求
+                StringEntity s = new StringEntity(JSON.toJSONString(wxMssVo), "UTF-8");
+                s.setContentEncoding("UTF-8");
+                s.setContentType("application/json; charset=UTF-8");
+                post.setEntity(s);//设置编码，不然模板内容会乱码
+                HttpResponse response = client.execute(post);//提交POST请求
+                HttpEntity result = response.getEntity();//拿到返回的HttpResponse的"实体"
+                String content = EntityUtils.toString(result);
+                System.out.println(content);//打印返回的消息
             }
         } catch (Exception t) {
-
+            System.out.println(t.getMessage());
         } finally {
             sqlSession.close();
         }
@@ -138,10 +147,13 @@ public class PostInformation {
                 WxMssVo wxMssVo = new WxMssVo();
 
                 List<Push> pushs = selectInterface.FindPushBySid(student.getId());
-                if ((pushs == null) || (student.getOpen_id() == null))
+                if ((pushs.isEmpty()) || (student.getOpen_id() == null))
                     continue;
 
+                DeleteInterface deleteInterface=sqlSession.getMapper(DeleteInterface.class);
                 Push push = pushs.get(0);
+                deleteInterface.DeletePush(push.getId());
+                sqlSession.commit();
                 if(push.getForm_id() == null)
                     continue;
                 wxMssVo.setTouser(student.getOpen_id());//用户openid
@@ -155,25 +167,28 @@ public class PostInformation {
                 m.put("keyword1", keyword1);
 
                 TemplateData keyword2 = new TemplateData();
-                keyword2.setValue(information.getTime());
+                keyword2.setValue("物业管理员");
                 m.put("keyword2", keyword2);
+
+                TemplateData keyword3 = new TemplateData();
+                keyword3.setValue(information.getTime());
+                m.put("keyword3", keyword3);
                 wxMssVo.setData(m);
 
 
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                connection.connect();
-                OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
-                out.append(JSON.toJSONString(wxMssVo));
-                out.flush();
-                out.close();
-                // 关闭链接
-                connection.disconnect();
+                HttpClient client =HttpClientBuilder.create().build();//构建一个Client
+                HttpPost post = new HttpPost(url.toString());//构建一个POST请求
+                StringEntity s = new StringEntity(JSON.toJSONString(wxMssVo), "UTF-8");
+                s.setContentEncoding("UTF-8");
+                s.setContentType("application/json; charset=UTF-8");
+                post.setEntity(s);//设置编码，不然模板内容会乱码
+                HttpResponse response = client.execute(post);//提交POST请求
+                HttpEntity result = response.getEntity();//拿到返回的HttpResponse的"实体"
+                String content = EntityUtils.toString(result);
+                System.out.println(content);//打印返回的消息
             }
         } catch (Exception t) {
-
+            System.out.println(t.getMessage());
         } finally {
             sqlSession.close();
         }

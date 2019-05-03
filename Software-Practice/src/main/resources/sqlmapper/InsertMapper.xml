@@ -16,8 +16,8 @@
 
     <insert id="InsertQuestion" parameterType="com.softwarepractice.entity.Question"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO question(questionnarie_id,content,type)
-        VALUES(#{questionnarie_id},#{content},#{type})
+        INSERT INTO question(questionnaire_id,content,type)
+        VALUES(#{questionnaire_id},#{content},#{type})
     </insert>
 
     <insert id="InsertOption" parameterType="com.softwarepractice.entity.Options">

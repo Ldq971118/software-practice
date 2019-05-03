@@ -19,7 +19,7 @@ public class Student {
     private Integer id;
     private String name;
     private Integer student_id;
-    private Integer telephone;
+    private String telephone;
     private String open_id;
     private Integer is_leader;
 }

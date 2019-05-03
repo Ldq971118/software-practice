@@ -67,7 +67,7 @@ public class WorkerManager {
             Worker worker = new Worker();
             worker.setName((String) worker_map.get("name"));
             worker.setWorker_id((Integer) worker_map.get("workerId"));
-            worker.setTelephone(Integer.parseInt((String) worker_map.get("tel")));
+            worker.setTelephone((String) worker_map.get("tel"));
             worker.setType((String) worker_map.get("type"));
 
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();

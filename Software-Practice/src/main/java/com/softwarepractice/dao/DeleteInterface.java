@@ -6,4 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface DeleteInterface {
     Integer DeleteWorkerById(Integer id);
     Integer DeleteAccommendation(Integer id);
+    Integer DeletePush(Integer id);
 }

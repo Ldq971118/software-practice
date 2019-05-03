@@ -46,7 +46,7 @@ public class UserManager {
 
         if (admin != null && admin.getPassword().equals(passwd)) {
             loginSuccess = new LoginSuccess(Token.createToken(username, passwd, admin.getJurisdirction()), admin.getId(),
-                    admin.getW_id(), admin.getJurisdirction());
+                    username, admin.getJurisdirction());
             return loginSuccess;
         } else {
             loginError = new ErrorMessage("用户名或密码错误");

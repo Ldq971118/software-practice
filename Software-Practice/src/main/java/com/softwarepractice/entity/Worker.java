@@ -18,6 +18,6 @@ public class Worker {
     private Integer id;
     private String name;
     private Integer worker_id;
-    private Integer telephone;
+    private String telephone;
     private String type;
 }

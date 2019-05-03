@@ -8,7 +8,7 @@ public class AccommendationMessage implements MessageInterface {
     private Integer id; //Accommendation_id
     private String name;
     private Integer student_id; //学号
-    private Integer telephone;
+    private String telephone;
     private Integer zone;
     private Integer building;
     private Integer room;

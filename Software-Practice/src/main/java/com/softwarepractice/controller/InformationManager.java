@@ -13,7 +13,6 @@ import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
 import com.softwarepractice.message.medium.InformationsMessage;
-import com.softwarepractice.message.medium.Informations_Worker;
 import com.softwarepractice.message.medium.Response;
 import com.softwarepractice.message.success.SuccessMessage;
 import org.apache.ibatis.session.SqlSession;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,21 +56,7 @@ public class InformationManager {
         SqlSession sqlSession = sqlSessionFactoryBean.getObject().openSession();
 
         PostInformation postInformation=new PostInformation();
-        Dormitory dormitory=new Dormitory();
-        boolean mark=true;
-        if(zone.equals(0)){}
-        else{
-            dormitory.setZone(zone);
-            dormitory.setBuilding((Integer) data_map.get("building"));
-            dormitory.setRoom((Integer) data_map.get("room"));
-            SelectInterface selectInterface=sqlSession.getMapper(SelectInterface.class);
-            dormitory=selectInterface.SelectDormitory(dormitory);
-            if(dormitory==null){
-                ErrorMessage errorMessage=new ErrorMessage("没有找到该宿舍");
-                return errorMessage;
-            }
-            mark=false;
-        }
+
         InsertInterface insertInterface=sqlSession.getMapper(InsertInterface.class);
         Integer effect=insertInterface.InsertInformation(information);
         sqlSession.commit();
@@ -83,10 +67,12 @@ public class InformationManager {
         }else{
             SuccessMessage successMessage=new SuccessMessage();
             postInformation.getAccess_token();
-            if(mark)
+            if(zone.equals(0)){
                 postInformation.PostAll(information);
-            else
-                postInformation.PostOneDorm(dormitory.getId(),information);
+            }
+            else{
+                postInformation.PostOneDorm(information);
+            }
             return successMessage;
         }
     }
@@ -104,30 +90,10 @@ public class InformationManager {
                 throw new Exception("Token Error");
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-            List<Information> informationList=selectInterface.FindInformationAll();
-            List<InformationsMessage> informationsMessageList=new ArrayList<>();
-            for(int i=0;i<informationList.size();i++){
-                Worker worker=selectInterface.SelectWorker(informationList.get(i).getW_id());
-                InformationsMessage informationsMessage=new InformationsMessage();
-                informationsMessage.setId(informationList.get(i).getId());
-                informationsMessage.setTitle(informationList.get(i).getTitle());
-                informationsMessage.setTime(informationList.get(i).getTime());
-                informationsMessage.setZone(informationList.get(i).getZone());
-                informationsMessage.setBuilding(informationList.get(i).getBuilding());
-                informationsMessage.setRoom(informationList.get(i).getRoom());
-                informationsMessage.setContent(informationList.get(i).getContent());
-                informationsMessage.setW_id(informationList.get(i).getW_id());
-                Informations_Worker informations_worker=new Informations_Worker();
-                informations_worker.setId(worker.getId());
-                informations_worker.setName(worker.getName());
-                informations_worker.setTelephone(worker.getTelephone());
-                informationsMessage.setWorker(informations_worker);
-                informationsMessageList.add(informationsMessage);
-            }
-
             PageHelper.startPage(pageNum, pageSize);
+            List<InformationsMessage> informationList=selectInterface.FindInformationAll();
             PageInfo<InformationsMessage> informationsMessagePageInfo =
-                    new PageInfo<>(informationsMessageList);
+                    new PageInfo<>(informationList);
             Response response=new Response(informationsMessagePageInfo);
             session.close();
             return response;

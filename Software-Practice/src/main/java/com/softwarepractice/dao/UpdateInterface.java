@@ -9,4 +9,6 @@ public interface UpdateInterface {
     Integer UpdateInformation(Information information);
 
     Integer UpdateRepairStatus(Integer id,Integer status);
+
+    Integer UpdateComplaintStatus(Integer id,Integer status);
 }

@@ -12,5 +12,9 @@
         DELETE FROM accommendation WHERE id=#{id}
     </delete>
 
+    <delete id="DeletePush" parameterType="Integer">
+        DELETE FROM push WHERE id=#{id}
+    </delete>
+
 
 </mapper>

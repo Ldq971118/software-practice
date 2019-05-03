@@ -22,6 +22,9 @@
         WHERE id=#{param1}
     </update>
 
-
+    <update id="UpdateComplaintStatus">
+        UPDATE complaint SET status=#{param2}
+        WHERE id=#{param1}
+    </update>
 
 </mapper>

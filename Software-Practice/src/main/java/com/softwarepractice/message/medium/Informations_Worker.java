@@ -6,5 +6,5 @@ import lombok.Data;
 public class Informations_Worker {
     private Integer id;
     private String name;
-    private Integer telephone;
+    private String telephone;
 }

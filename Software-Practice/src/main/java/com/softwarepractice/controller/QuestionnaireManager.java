@@ -76,14 +76,14 @@ public class QuestionnaireManager {
             return fail;
 
         //questions
-        Integer questionnarie_id = questionnaire.getId();
+        Integer questionnaire_id = questionnaire.getId();
         JSONArray jsonlist = jsonObject.getJSONArray("list");
         Question question;
         Options option;
         for (int i = 0; i < jsonlist.size(); i++) {
             //get question
             question = new Question();
-            question.setQuestionnarie_id(questionnarie_id);
+            question.setQuestionnaire_id(questionnaire_id);
             question.setContent(jsonlist.getJSONObject(i).getString("title"));
             question.setType(jsonlist.getJSONObject(i).getInteger("type"));
             Integer question_effect = insertInterface.InsertQuestion(question);

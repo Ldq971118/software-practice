@@ -23,7 +23,7 @@ public class Repair {
     private Integer id;
     private Integer d_id;
     private Integer s_id;
-    private Integer telephone;
+    private String telephone;
     private String content;
     private String picture;
     private Integer status;

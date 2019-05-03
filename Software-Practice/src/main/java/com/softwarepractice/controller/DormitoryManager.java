@@ -69,7 +69,7 @@ public class DormitoryManager {
             student.setIs_leader((Integer) datamap.get("is_leader"));
             student.setName((String) datamap.get("name"));
             student.setStudent_id(Integer.parseInt((String) datamap.get("studentId")));
-            student.setTelephone(Integer.parseInt((String) datamap.get("tel")));
+            student.setTelephone((String) datamap.get("tel"));
 
             Student exist_stu = selectInterface.SelectStudent(student);
             Integer effect;
