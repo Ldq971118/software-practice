@@ -44,16 +44,23 @@ public class InformationManager {
 
         Integer zone=(Integer) data_map.get("zone");
 
+        SqlSession sqlSession = sqlSessionFactoryBean.getObject().openSession();
+        SelectInterface selectInterface=sqlSession.getMapper(SelectInterface.class);
+        Worker worker=selectInterface.SelectWorker((Integer) data_map.get("workerId"));
+        if(worker==null){
+            ErrorMessage errorMessage=new ErrorMessage("推送失败");
+            return errorMessage;
+        }
+
         Information information=new Information();
         information.setTime((String) data_map.get("time"));
         information.setContent((String) data_map.get("content"));
         information.setTitle((String) data_map.get("title"));
         information.setBuilding((Integer) data_map.get("building"));
         information.setRoom((Integer) data_map.get("room"));
-        information.setW_id((Integer) data_map.get("workerId"));
+        information.setW_id(worker.getId());
         information.setZone(zone);
 
-        SqlSession sqlSession = sqlSessionFactoryBean.getObject().openSession();
 
         PostInformation postInformation=new PostInformation();
 
@@ -81,7 +88,7 @@ public class InformationManager {
 
     @RequestMapping(value = "/getAllInformations", method = RequestMethod.GET)
     @ResponseBody
-    public MessageInterface GetAllInformations(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
+    public MessageInterface getAllInformations(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {
@@ -102,7 +109,7 @@ public class InformationManager {
 
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface UpdateInformation(@RequestBody Map<String,Object> data_map, HttpServletRequest request) throws Exception{
+    public MessageInterface updateInformation(@RequestBody Map<String,Object> data_map, HttpServletRequest request) throws Exception{
         ErrorMessage fail=new ErrorMessage("权限不足");
         SuccessMessage successMessage=new SuccessMessage();
 
