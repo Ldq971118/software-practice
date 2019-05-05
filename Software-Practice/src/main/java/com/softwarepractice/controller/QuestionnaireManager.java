@@ -9,6 +9,7 @@ import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.entity.Options;
 import com.softwarepractice.entity.Question;
 import com.softwarepractice.entity.Questionnaire;
+import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
@@ -50,12 +51,19 @@ public class QuestionnaireManager {
             throw new Exception("Token Error");
 
         JSONObject jsonObject = JSONObject.parseObject(params);
+        SqlSession session = sqlSessionFactoryBean.getObject().openSession();
+        SelectInterface selectInterface=session.getMapper(SelectInterface.class);
+        Worker worker=selectInterface.SelectWorker(jsonObject.getInteger("workerId"));
+        if(worker==null){
+            ErrorMessage errorMessage=new ErrorMessage("问卷发布失败");
+            return errorMessage;
+        }
 
         //basic information
         String title = jsonObject.getString("title");
         String startTime = jsonObject.getString("startTime");
         String endTime = jsonObject.getString("endTime");
-        Integer workerId = jsonObject.getInteger("workerId");
+        Integer w_Id = worker.getId();
         Integer zong = jsonObject.getInteger("zone");
         Integer building = jsonObject.getInteger("building");
         Integer room = jsonObject.getInteger("room");
@@ -64,12 +72,12 @@ public class QuestionnaireManager {
         questionnaire.setTitle(title);
         questionnaire.setStart_time(startTime);
         questionnaire.setEnd_time(endTime);
-        questionnaire.setW_id(workerId);
+        questionnaire.setW_id(w_Id);
         questionnaire.setZone(zong);
         questionnaire.setBuilding(building);
         questionnaire.setRoom(room);
 
-        SqlSession session = sqlSessionFactoryBean.getObject().openSession();
+
         InsertInterface insertInterface = session.getMapper(InsertInterface.class);
         Integer questionnaire_effect = insertInterface.InsertQuestionnaire(questionnaire);
         if (questionnaire_effect != 1)

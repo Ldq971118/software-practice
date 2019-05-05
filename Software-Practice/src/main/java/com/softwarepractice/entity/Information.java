@@ -2,7 +2,6 @@ package com.softwarepractice.entity;
 
 import lombok.Data;
 
-import java.util.Date;
 
 /**
  * CREATE TABLE `information` (

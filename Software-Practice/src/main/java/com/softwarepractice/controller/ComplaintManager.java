@@ -9,6 +9,7 @@ import com.softwarepractice.entity.Repair;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.error.ErrorMessage;
+import com.softwarepractice.message.medium.ComplaintMessage;
 import com.softwarepractice.message.medium.Response;
 import com.softwarepractice.message.success.SuccessMessage;
 import org.apache.ibatis.session.SqlSession;
@@ -35,7 +36,7 @@ public class ComplaintManager {
 
     @RequestMapping(value = "/getAllComplaints", method = RequestMethod.GET)
     @ResponseBody
-    public MessageInterface GetAllComplaints(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
+    public MessageInterface getAllComplaints(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {
@@ -45,8 +46,8 @@ public class ComplaintManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<Complaint> complaintList = selectInterface.FindComplaintAll(Token.GetJurisdirction(token));
-            PageInfo<Complaint> complaintPageInfo = new PageInfo<>(complaintList);
+            List<ComplaintMessage> complaintList = selectInterface.FindComplaintAll(Token.GetJurisdirction(token));
+            PageInfo<ComplaintMessage> complaintPageInfo = new PageInfo<>(complaintList);
             Response response=new Response(complaintPageInfo);
             session.close();
             return response;

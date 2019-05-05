@@ -2,7 +2,6 @@ package com.softwarepractice.entity;
 
 import lombok.Data;
 
-import java.util.Date;
 
 /**
  * CREATE TABLE `repair` (
@@ -27,5 +26,5 @@ public class Repair {
     private String content;
     private String picture;
     private Integer status;
-    private Date time;
+    private String time;
 }

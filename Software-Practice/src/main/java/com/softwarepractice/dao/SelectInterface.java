@@ -3,7 +3,9 @@ package com.softwarepractice.dao;
 import com.softwarepractice.entity.*;
 import com.softwarepractice.message.fee.feeMessage;
 import com.softwarepractice.message.medium.AccommendationMessage;
+import com.softwarepractice.message.medium.ComplaintMessage;
 import com.softwarepractice.message.medium.InformationsMessage;
+import com.softwarepractice.message.medium.RepairMessage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,8 +17,8 @@ public interface SelectInterface {
     List<Worker> FindWorkerAll();
     List<feeMessage> FindFeeAll(@Param("jurisdirction") Integer jurisdirction);
     List<feeMessage> FindFeeByType(@Param("jurisdirction")Integer jurisdirction,Integer type);
-    List<Repair> FindRepairAll(@Param("jurisdirction")Integer jurisdirction);
-    List<Complaint> FindComplaintAll(@Param("jurisdirction")Integer jurisdirction);
+    List<RepairMessage> FindRepairAll(@Param("jurisdirction")Integer jurisdirction);
+    List<ComplaintMessage> FindComplaintAll(@Param("jurisdirction")Integer jurisdirction);
     List<Questionnaire> FindQuestionnaireAll(@Param("jurisdirction")Integer jurisdirction);
 
     //获取问卷详细

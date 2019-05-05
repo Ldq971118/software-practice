@@ -2,7 +2,6 @@ package com.softwarepractice.entity;
 
 import lombok.Data;
 
-import java.util.Date;
 
 /**
  * CREATE TABLE `complaint` (
@@ -25,5 +24,5 @@ public class Complaint {
     private String content;
     private String picture;
     private Integer status;
-    private Date time;
+    private String time;
 }

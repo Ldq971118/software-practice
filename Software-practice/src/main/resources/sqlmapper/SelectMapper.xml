@@ -50,17 +50,23 @@
         </association>
     </resultMap>
 
-    <select id="FindRepairAll" resultType="com.softwarepractice.entity.Repair">
-        SELECT * FROM repair,dormitory WHERE repair.d_id=dormitory.id
+    <select id="FindRepairAll" resultType="com.softwarepractice.message.medium.RepairMessage">
+        SELECT repair.id,repair.d_id,repair.s_id,repair.telephone,
+        repair.content,repair.picture,repair.status,repair.time,
+        dormitory.zone,dormitory.building,dormitory.room,student.student_id
+        FROM repair,dormitory,student
+        WHERE repair.d_id=dormitory.id AND repair.s_id=student.id
         <if test="jurisdirction != 0" >
             AND dormitory.zone=#{jurisdirction}
         </if>
         ORDER BY status ASC
     </select>
 
-    <select id="FindComplaintAll" resultType="com.softwarepractice.entity.Complaint">
-        SELECT * FROM complaint,dormitory,accommendation
-        WHERE complaint.s_id=accommendation.s_id
+    <select id="FindComplaintAll" resultType="com.softwarepractice.message.medium.ComplaintMessage">
+        SELECT complaint.id,complaint.s_id,complaint.telephone,complaint.content,
+        complaint.picture,complaint.status,complaint.time,student.student_id
+        FROM complaint,dormitory,accommendation,student
+        WHERE complaint.s_id=accommendation.s_id AND complaint.s_id=student.id
             AND accommendation.d_id=dormitory.id
         <if test="jurisdirction != 0" >
             AND dormitory.zone=#{jurisdirction}
