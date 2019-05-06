@@ -8,16 +8,16 @@
        将返回的数据  与对象对应。将返回的数据，按照配置组装成对应的对象。
      -->
 
-    <select id="SelectAdmin" resultType="com.softwarepractice.entity.Admin">
+    <select id="selectAdminByWorkerId" resultType="com.softwarepractice.entity.Admin">
         SELECT * FROM admin,worker WHERE admin.w_id=worker.id
         AND worker.worker_id=#{worker_id}
     </select>
 
-    <select id="FindWorkerAll" resultType="com.softwarepractice.entity.Worker">
+    <select id="findWorkerAll" resultType="com.softwarepractice.entity.Worker">
         SELECT * FROM worker
     </select>
 
-    <select id="FindFeeByType" resultMap="feeMessage">
+    <select id="findFeeByType" resultMap="feeMessage">
         SELECT fee.id,fee.start_time,fee.end_time,fee.amount,fee.status,fee.type,
         dormitory.id dorm_id,dormitory.zone,dormitory.building,dormitory.room
         FROM fee,dormitory WHERE fee.d_id=dormitory.id AND fee.type=#{param2}
@@ -26,7 +26,7 @@
         </if>
     </select>
 
-    <select id="FindFeeAll" resultMap="feeMessage">
+    <select id="findFeeAll" resultMap="feeMessage">
         SELECT fee.id,fee.start_time,fee.end_time,fee.amount,fee.status,fee.type,
         dormitory.id dorm_id,dormitory.zone,dormitory.building,dormitory.room
         FROM fee,dormitory WHERE fee.d_id=dormitory.id
@@ -50,7 +50,7 @@
         </association>
     </resultMap>
 
-    <select id="FindRepairAll" resultType="com.softwarepractice.message.medium.RepairMessage">
+    <select id="findRepairAll" resultType="com.softwarepractice.message.medium.RepairMessage">
         SELECT repair.id,repair.d_id,repair.s_id,repair.telephone,
         repair.content,repair.picture,repair.status,repair.time,
         dormitory.zone,dormitory.building,dormitory.room,student.student_id
@@ -62,7 +62,7 @@
         ORDER BY status ASC
     </select>
 
-    <select id="FindComplaintAll" resultType="com.softwarepractice.message.medium.ComplaintMessage">
+    <select id="findComplaintAll" resultType="com.softwarepractice.message.medium.ComplaintMessage">
         SELECT complaint.id,complaint.s_id,complaint.telephone,complaint.content,
         complaint.picture,complaint.status,complaint.time,student.student_id
         FROM complaint,dormitory,accommendation,student
@@ -74,7 +74,7 @@
         ORDER BY status ASC
     </select>
 
-    <select id="FindQuestionnaireAll" resultType="com.softwarepractice.entity.Questionnaire">
+    <select id="findQuestionnaireAll" resultType="com.softwarepractice.entity.Questionnaire">
         SELECT * FROM questionnaire
         <if test="jurisdirction != 0" >
             WHERE questionnaire.zone=#{jurisdirction}
@@ -82,31 +82,31 @@
         ORDER BY id DESC
     </select>
 
-    <select id="SelectQuestionnaire" resultType="com.softwarepractice.entity.Questionnaire">
-        SELECT * FROM questionnaire WHERE questionnaire.id=#{id}
+    <select id="selectQuestionnaireById" resultType="com.softwarepractice.entity.Questionnaire">
+        SELECT * FROM questionnaire WHERE id=#{id}
     </select>
 
-    <select id="FindQuestionAll" resultType="com.softwarepractice.entity.Question">
+    <select id="findQuestionAllByQuestionaireId" resultType="com.softwarepractice.entity.Question">
         SELECT * FROM question WHERE question.questionnaire_id=#{questionnaire_id}
     </select>
 
-    <select id="FindOptionsAll" resultType="com.softwarepractice.entity.Options">
+    <select id="findOptionsAllByQuestionId" resultType="com.softwarepractice.entity.Options">
         SELECT * FROM options WHERE options.question_id=#{question_id}
     </select>
 
-    <select id="SelectDormitory" resultType="com.softwarepractice.entity.Dormitory">
+    <select id="selectDormitory" resultType="com.softwarepractice.entity.Dormitory">
         SELECT * FROM dormitory WHERE zone=#{zone} AND building=#{building} AND room=#{room}
     </select>
 
-    <select id="SelectDormitoryById" resultType="com.softwarepractice.entity.Dormitory">
+    <select id="selectDormitoryById" resultType="com.softwarepractice.entity.Dormitory">
         SELECT * FROM dormitory WHERE id=#{id}
     </select>
 
-    <select id="SelectStudent" resultType="com.softwarepractice.entity.Student">
+    <select id="selectStudentByStudentId" resultType="com.softwarepractice.entity.Student">
         SELECT * FROM student WHERE student_id=#{student_id}
     </select>
 
-    <select id="FindAccommendationAll" resultType="com.softwarepractice.message.medium.AccommendationMessage">
+    <select id="findAccommendationAll" resultType="com.softwarepractice.message.medium.AccommendationMessage">
         SELECT a.id,s.name,s.student_id,s.telephone,d.zone,d.building,d.room
         FROM dormitory d,accommendation a,student s
         WHERE d.id=a.d_id AND a.s_id=s.id
@@ -131,34 +131,34 @@
         </association>
     </resultMap>
 
-    <select id="FindInformationAll" resultMap="Information">
+    <select id="findInformationAll" resultMap="Information">
         SELECT i.id,i.title,i.content,i.time,i.w_id,i.zone,i.building,i.room,w.id wid,w.name,w.telephone
         FROM information i,worker w
         WHERE i.w_id=w.id
     </select>
 
-    <select id="SelectWorker" resultType="com.softwarepractice.entity.Worker">
+    <select id="selectWorkerByWorkerId" resultType="com.softwarepractice.entity.Worker">
         SELECT * FROM worker WHERE worker_id=#{worker_id}
     </select>
 
-    <select id="SelectWorkerById" resultType="com.softwarepractice.entity.Worker">
+    <select id="selectWorkerById" resultType="com.softwarepractice.entity.Worker">
         SELECT * FROM worker WHERE id=#{id}
     </select>
 
-    <select id="SelectInformation" resultType="com.softwarepractice.entity.Information">
+    <select id="selectInformationById" resultType="com.softwarepractice.entity.Information">
         SELECT * FROM information WHERE id=#{id}
     </select>
 
-    <select id="FindPushBySid" resultType="com.softwarepractice.entity.Push">
+    <select id="findPushBySid" resultType="com.softwarepractice.entity.Push">
         SELECT * FROM push WHERE s_id=#{s_id}
     </select>
 
-    <select id="FindStudentAll" resultType="com.softwarepractice.entity.Student">
+    <select id="findStudentAll" resultType="com.softwarepractice.entity.Student">
         SELECT id,open_id FROM student
     </select>
 
     <!-- zone building room -->
-    <select id="FindStudentBySome" resultType="com.softwarepractice.entity.Student">
+    <select id="findStudentBySome" resultType="com.softwarepractice.entity.Student">
         SELECT s.id,s.open_id
         FROM student s,accommendation a,dormitory d
         WHERE a.d_id=d.id AND a.s_id=s.id

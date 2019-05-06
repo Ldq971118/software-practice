@@ -4,11 +4,11 @@ import com.softwarepractice.entity.Accommendation;
 import com.softwarepractice.entity.Information;
 
 public interface UpdateInterface {
-    Integer UpdateAccommendation(Accommendation accommendation);
+    Integer updateAccommendation(Accommendation accommendation);
 
-    Integer UpdateInformation(Information information);
+    Integer updateInformation(Information information);
 
-    Integer UpdateRepairStatus(Integer id,Integer status);
+    Integer updateRepairStatus(Integer id,Integer status);
 
-    Integer UpdateComplaintStatus(Integer id,Integer status);
+    Integer updateComplaintStatus(Integer id,Integer status);
 }

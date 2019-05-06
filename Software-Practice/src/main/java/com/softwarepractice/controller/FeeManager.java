@@ -47,7 +47,7 @@ public class FeeManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<feeMessage> feeList = selectInterface.FindFeeAll(Token.GetJurisdirction(token));
+            List<feeMessage> feeList = selectInterface.findFeeAll(Token.getJurisdirction(token));
             PageInfo<feeMessage> feePageInfo = new PageInfo<>(feeList);
             Response response = new Response(feePageInfo);
             session.close();
@@ -67,7 +67,7 @@ public class FeeManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<feeMessage> feeList = selectInterface.FindFeeByType(Token.GetJurisdirction(token), type);
+            List<feeMessage> feeList = selectInterface.findFeeByType(Token.getJurisdirction(token), type);
             PageInfo<feeMessage> feePageInfo = new PageInfo<>(feeList);
             Response response = new Response(feePageInfo);
             session.close();
@@ -87,7 +87,7 @@ public class FeeManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<feeMessage> feeList = selectInterface.FindFeeByType(Token.GetJurisdirction(token), type);
+            List<feeMessage> feeList = selectInterface.findFeeByType(Token.getJurisdirction(token), type);
             PageInfo<feeMessage> feePageInfo = new PageInfo<>(feeList);
             Response response = new Response(feePageInfo);
             session.close();

@@ -4,15 +4,15 @@
 
 <mapper namespace="com.softwarepractice.dao.DeleteInterface">
 
-    <delete id="DeleteWorkerById" parameterType="Integer">
+    <delete id="deleteWorkerById" parameterType="Integer">
         DELETE FROM worker WHERE id=#{id}
     </delete>
 
-    <delete id="DeleteAccommendation" parameterType="Integer">
+    <delete id="deleteAccommendationById" parameterType="Integer">
         DELETE FROM accommendation WHERE id=#{id}
     </delete>
 
-    <delete id="DeletePush" parameterType="Integer">
+    <delete id="deletePushById" parameterType="Integer">
         DELETE FROM push WHERE id=#{id}
     </delete>
 

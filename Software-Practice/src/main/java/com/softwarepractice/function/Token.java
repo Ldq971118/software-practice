@@ -44,12 +44,12 @@ public class Token {
         }
     }
 
-    public static Integer GetJurisdirction(String token){
+    public static Integer getJurisdirction(String token){
         DecodedJWT jwt = JWT.decode(token);
         return jwt.getClaim("jurisdirction").asInt();
     }
 
-    public static Integer GetUsername(String token){
+    public static Integer getUsername(String token){
         DecodedJWT jwt = JWT.decode(token);
         return jwt.getClaim("username").asInt();
     }

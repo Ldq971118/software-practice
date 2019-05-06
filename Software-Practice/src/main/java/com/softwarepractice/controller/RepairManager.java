@@ -45,7 +45,7 @@ public class RepairManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<RepairMessage> repairList = selectInterface.FindRepairAll(Token.GetJurisdirction(token));
+            List<RepairMessage> repairList = selectInterface.findRepairAll(Token.getJurisdirction(token));
             PageInfo<RepairMessage> repairPageInfo = new PageInfo<>(repairList);
             Response response=new Response(repairPageInfo);
             session.close();
@@ -62,7 +62,7 @@ public class RepairManager {
             throw new Exception("Token Error");
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         UpdateInterface updateInterface = session.getMapper(UpdateInterface.class);
-        Integer effect = updateInterface.UpdateRepairStatus(id,status);
+        Integer effect = updateInterface.updateRepairStatus(id,status);
         session.commit();
         session.close();
         if(effect!=1){

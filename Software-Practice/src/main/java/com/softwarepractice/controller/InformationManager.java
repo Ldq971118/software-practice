@@ -46,7 +46,7 @@ public class InformationManager {
 
         SqlSession sqlSession = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface=sqlSession.getMapper(SelectInterface.class);
-        Worker worker=selectInterface.SelectWorker((Integer) data_map.get("workerId"));
+        Worker worker=selectInterface.selectWorkerByWorkerId((Integer) data_map.get("workerId"));
         if(worker==null){
             ErrorMessage errorMessage=new ErrorMessage("推送失败");
             return errorMessage;
@@ -65,7 +65,7 @@ public class InformationManager {
         PostInformation postInformation=new PostInformation();
 
         InsertInterface insertInterface=sqlSession.getMapper(InsertInterface.class);
-        Integer effect=insertInterface.InsertInformation(information);
+        Integer effect=insertInterface.insertInformation(information);
         sqlSession.commit();
         sqlSession.close();
         if(effect!=1){
@@ -75,10 +75,10 @@ public class InformationManager {
             SuccessMessage successMessage=new SuccessMessage();
             postInformation.getAccess_token();
             if(zone.equals(0)){
-                postInformation.PostAll(information);
+                postInformation.postAll(information);
             }
             else{
-                postInformation.PostOneDorm(information);
+                postInformation.postOneDorm(information);
             }
             return successMessage;
         }
@@ -98,7 +98,7 @@ public class InformationManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<InformationsMessage> informationList=selectInterface.FindInformationAll();
+            List<InformationsMessage> informationList=selectInterface.findInformationAll();
             PageInfo<InformationsMessage> informationsMessagePageInfo =
                     new PageInfo<>(informationList);
             Response response=new Response(informationsMessagePageInfo);
@@ -118,14 +118,14 @@ public class InformationManager {
             throw new Exception("Token Error");
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-        Information information=selectInterface.SelectInformation((Integer)data_map.get("id"));
-        Integer jurisdirction=Token.GetJurisdirction(token);
+        Information information=selectInterface.selectInformationById((Integer)data_map.get("id"));
+        Integer jurisdirction=Token.getJurisdirction(token);
         if(jurisdirction==0||information.getZone().equals(jurisdirction)){
             information.setTitle((String) data_map.get("title"));
             information.setContent((String) data_map.get("content"));
             information.setTime((String) data_map.get("time"));
             UpdateInterface updateInterface=session.getMapper(UpdateInterface.class);
-            updateInterface.UpdateInformation(information);
+            updateInterface.updateInformation(information);
             session.commit();
             session.close();
             return successMessage;

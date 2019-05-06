@@ -46,7 +46,7 @@ public class ComplaintManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<ComplaintMessage> complaintList = selectInterface.FindComplaintAll(Token.GetJurisdirction(token));
+            List<ComplaintMessage> complaintList = selectInterface.findComplaintAll(Token.getJurisdirction(token));
             PageInfo<ComplaintMessage> complaintPageInfo = new PageInfo<>(complaintList);
             Response response=new Response(complaintPageInfo);
             session.close();
@@ -63,7 +63,7 @@ public class ComplaintManager {
             throw new Exception("Token Error");
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         UpdateInterface updateInterface = session.getMapper(UpdateInterface.class);
-        Integer effect = updateInterface.UpdateComplaintStatus(id,status);
+        Integer effect = updateInterface.updateComplaintStatus(id,status);
         session.commit();
         session.close();
         if(effect!=1){

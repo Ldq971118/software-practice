@@ -72,12 +72,12 @@ public class PostInformation {
         access_token = jsonObject.getString("access_token");
     }
 
-    public void PostOneDorm(Information information) {
+    public void postOneDorm(Information information) {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             URL url = new URL("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=" + access_token);
             SelectInterface selectInterface = sqlSession.getMapper(SelectInterface.class);
-            List<Student> students = selectInterface.FindStudentBySome(information.getZone(),
+            List<Student> students = selectInterface.findStudentBySome(information.getZone(),
                     information.getBuilding(),information.getRoom());
             if (students == null)
                 return;
@@ -86,12 +86,12 @@ public class PostInformation {
                 //拼接推送的模版
                 WxMssVo wxMssVo = new WxMssVo();
 
-                List<Push> pushs = selectInterface.FindPushBySid(student.getId());
+                List<Push> pushs = selectInterface.findPushBySid(student.getId());
                 if ((pushs.isEmpty()) || (student.getOpen_id() == null))
                     continue;
                 DeleteInterface deleteInterface=sqlSession.getMapper(DeleteInterface.class);
                 Push push = pushs.get(0);
-                deleteInterface.DeletePush(push.getId());
+                deleteInterface.deletePushById(push.getId());
                 sqlSession.commit();
                 if(push.getForm_id() == null)
                     continue;
@@ -132,13 +132,13 @@ public class PostInformation {
         }
     }
 
-    public void PostAll(Information information) {
+    public void postAll(Information information) {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         try {
             URL url = new URL("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=" + access_token);
 
             SelectInterface selectInterface = sqlSession.getMapper(SelectInterface.class);
-            List<Student> students = selectInterface.FindStudentAll();
+            List<Student> students = selectInterface.findStudentAll();
 
 
             for (int i = 0; i < students.size(); i++) {
@@ -146,13 +146,13 @@ public class PostInformation {
                 //拼接推送的模版
                 WxMssVo wxMssVo = new WxMssVo();
 
-                List<Push> pushs = selectInterface.FindPushBySid(student.getId());
+                List<Push> pushs = selectInterface.findPushBySid(student.getId());
                 if ((pushs.isEmpty()) || (student.getOpen_id() == null))
                     continue;
 
                 DeleteInterface deleteInterface=sqlSession.getMapper(DeleteInterface.class);
                 Push push = pushs.get(0);
-                deleteInterface.DeletePush(push.getId());
+                deleteInterface.deletePushById(push.getId());
                 sqlSession.commit();
                 if(push.getForm_id() == null)
                     continue;

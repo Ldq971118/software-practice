@@ -4,39 +4,39 @@
 
 <mapper namespace="com.softwarepractice.dao.InsertInterface">
 
-    <insert id="InsertWorker" parameterType="com.softwarepractice.entity.Worker">
+    <insert id="insertWorker" parameterType="com.softwarepractice.entity.Worker">
         INSERT INTO worker(name,worker_id,telephone,type) VALUES(#{name},#{worker_id},#{telephone},#{type})
     </insert>
     
-    <insert id="InsertQuestionnaire" parameterType="com.softwarepractice.entity.Questionnaire"
+    <insert id="insertQuestionnaire" parameterType="com.softwarepractice.entity.Questionnaire"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO questionnaire(title,start_time,end_time,w_id,zone,building,room)
         VALUES(#{title},#{start_time},#{end_time},#{w_id},#{zone},#{building},#{room})
     </insert>
 
-    <insert id="InsertQuestion" parameterType="com.softwarepractice.entity.Question"
+    <insert id="insertQuestion" parameterType="com.softwarepractice.entity.Question"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO question(questionnaire_id,content,type)
         VALUES(#{questionnaire_id},#{content},#{type})
     </insert>
 
-    <insert id="InsertOption" parameterType="com.softwarepractice.entity.Options">
+    <insert id="insertOption" parameterType="com.softwarepractice.entity.Options">
         INSERT INTO options(question_id,content,select_number)
         VALUES(#{question_id},#{content},#{select_number})
     </insert>
     
-    <insert id="InsertAccommendation" parameterType="com.softwarepractice.entity.Accommendation">
+    <insert id="insertAccommendation" parameterType="com.softwarepractice.entity.Accommendation">
         INSERT INTO accommendation(s_id,d_id)
         VALUES(#{s_id},#{d_id})
     </insert>
 
-    <insert id="InsertStudent" parameterType="com.softwarepractice.entity.Student"
+    <insert id="insertStudent" parameterType="com.softwarepractice.entity.Student"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO student(name,student_id,telephone,is_leader)
         VALUES(#{name},#{student_id},#{telephone},#{is_leader})
     </insert>
 
-    <insert id="InsertInformation" parameterType="com.softwarepractice.entity.Information"
+    <insert id="insertInformation" parameterType="com.softwarepractice.entity.Information"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO information(title,content,time,w_id,zone,building,room)
         VALUES(#{title},#{content},#{time},#{w_id},#{zone},#{building},#{room})

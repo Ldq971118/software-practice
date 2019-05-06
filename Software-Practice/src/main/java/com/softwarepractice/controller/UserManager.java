@@ -32,7 +32,7 @@ public class UserManager {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody
-    MessageInterface Login(@RequestBody Map<String, Object> map) throws Exception {
+    MessageInterface login(@RequestBody Map<String, Object> map) throws Exception {
         String username_str = (String) map.get("username");
         String passwd = (String) map.get("password");
         LoginSuccess loginSuccess;
@@ -41,7 +41,7 @@ public class UserManager {
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
         Integer username = Integer.parseInt(username_str);
-        Admin admin = selectInterface.SelectAdmin(username);
+        Admin admin = selectInterface.selectAdminByWorkerId(username);
         session.close();
 
         if (admin != null && admin.getPassword().equals(passwd)) {
@@ -58,11 +58,11 @@ public class UserManager {
     public @ResponseBody
     JSONObject getUserInfo(HttpServletRequest request) throws Exception {
         String token=request.getHeader("token");
-        Integer workerId = Token.GetUsername(token);
-        Integer jurisdiction=Token.GetJurisdirction(token);
+        Integer workerId = Token.getUsername(token);
+        Integer jurisdiction=Token.getJurisdirction(token);
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-        Worker worker=selectInterface.SelectWorker(workerId);
+        Worker worker=selectInterface.selectWorkerByWorkerId(workerId);
         session.close();
         JSONObject jsonData=new JSONObject();
         jsonData.put("workerId",worker.getWorker_id());

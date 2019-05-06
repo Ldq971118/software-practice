@@ -5,11 +5,11 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface InsertInterface {
-    Integer InsertWorker(Worker worker);
-    Integer InsertQuestionnaire(Questionnaire questionnaire);
-    Integer InsertQuestion(Question question);
-    Integer InsertOption(Options option);
-    Integer InsertAccommendation(Accommendation accommendation);
-    Integer InsertStudent(Student student);
-    Integer InsertInformation(Information information);
+    Integer insertWorker(Worker worker);
+    Integer insertQuestionnaire(Questionnaire questionnaire);
+    Integer insertQuestion(Question question);
+    Integer insertOption(Options option);
+    Integer insertAccommendation(Accommendation accommendation);
+    Integer insertStudent(Student student);
+    Integer insertInformation(Information information);
 }

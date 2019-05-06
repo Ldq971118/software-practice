@@ -37,10 +37,10 @@ public class DormitoryManager {
 
     @RequestMapping(value = "/saveDormitory", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface AddDormitory(@RequestBody Map<String, Object> datamap, HttpServletRequest request)
+    public MessageInterface addDormitory(@RequestBody Map<String, Object> datamap, HttpServletRequest request)
             throws Exception {
         String token = request.getHeader("token");
-        Integer jurisdirction = Token.GetJurisdirction(token);
+        Integer jurisdirction = Token.getJurisdirction(token);
 
         ErrorMessage fail = new ErrorMessage("权限不足");
         SuccessMessage success = new SuccessMessage();
@@ -58,7 +58,7 @@ public class DormitoryManager {
             InsertInterface insertInterface = session.getMapper(InsertInterface.class);
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
 
-            Dormitory selectDormitory = selectInterface.SelectDormitory(dormitory);
+            Dormitory selectDormitory = selectInterface.selectDormitory(dormitory);
             if (selectDormitory == null) {
                 fail.setErrMsg("宿舍不存在");
                 return fail;
@@ -71,10 +71,10 @@ public class DormitoryManager {
             student.setStudent_id(Integer.parseInt((String) datamap.get("studentId")));
             student.setTelephone((String) datamap.get("tel"));
 
-            Student exist_stu = selectInterface.SelectStudent(student);
+            Student exist_stu = selectInterface.selectStudentByStudentId(student);
             Integer effect;
             if (exist_stu == null) {
-                effect = insertInterface.InsertStudent(student);
+                effect = insertInterface.insertStudent(student);
                 if (effect != 1) {
                     fail.setErrMsg("添加失败");
                     return fail;
@@ -86,7 +86,7 @@ public class DormitoryManager {
             accommendation.setD_id(selectDormitory.getId());
             accommendation.setS_id(student.getId());
 
-            effect = insertInterface.InsertAccommendation(accommendation);
+            effect = insertInterface.insertAccommendation(accommendation);
             if (effect != 1) {
                 fail.setErrMsg("添加失败");
                 return fail;
@@ -99,7 +99,7 @@ public class DormitoryManager {
 
     @RequestMapping(value = "/getAllDormitories", method = RequestMethod.GET)
     @ResponseBody
-    public MessageInterface GetAllDormitories(Integer pageNum, Integer pageSize, HttpServletRequest request)
+    public MessageInterface getAllDormitories(Integer pageNum, Integer pageSize, HttpServletRequest request)
             throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
@@ -111,7 +111,7 @@ public class DormitoryManager {
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
             List<AccommendationMessage> accommendationAll =
-                    selectInterface.FindAccommendationAll(Token.GetJurisdirction(token));
+                    selectInterface.findAccommendationAll(Token.getJurisdirction(token));
             PageInfo<AccommendationMessage> accommendationMessagePageInfo =
                     new PageInfo<>(accommendationAll);
             Response response=new Response(accommendationMessagePageInfo);
@@ -123,9 +123,9 @@ public class DormitoryManager {
 
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface UpdateAccommendation(@RequestBody Map<String, Object> datamap, HttpServletRequest request) throws Exception {
+    public MessageInterface updateAccommendation(@RequestBody Map<String, Object> datamap, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
-        Integer jurisdirction = Token.GetJurisdirction(token);
+        Integer jurisdirction = Token.getJurisdirction(token);
 
         ErrorMessage fail = new ErrorMessage("权限不足");
         SuccessMessage success = new SuccessMessage();
@@ -140,7 +140,7 @@ public class DormitoryManager {
             dormitory.setBuilding((Integer) datamap.get("building"));
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-            dormitory=selectInterface.SelectDormitory(dormitory);
+            dormitory=selectInterface.selectDormitory(dormitory);
             if(dormitory==null){
                 fail.setErrMsg("宿舍信息错误");
                 return fail;
@@ -149,7 +149,7 @@ public class DormitoryManager {
                 accommendation.setD_id(dormitory.getId());
                 accommendation.setId(id);
                 UpdateInterface updateInterface=session.getMapper(UpdateInterface.class);
-                Integer effect=updateInterface.UpdateAccommendation(accommendation);
+                Integer effect=updateInterface.updateAccommendation(accommendation);
                 if(effect!=1){
                     fail.setErrMsg("住宿信息错误");
                     return fail;
@@ -163,9 +163,9 @@ public class DormitoryManager {
 
     @RequestMapping(value = "/removeById", method = RequestMethod.GET)
     @ResponseBody
-    public MessageInterface DeleteAccommendation(Integer id,HttpServletRequest request) throws Exception{
+    public MessageInterface deleteAccommendation(Integer id,HttpServletRequest request) throws Exception{
         String token = request.getHeader("token");
-        Integer jurisdirction = Token.GetJurisdirction(token);
+        Integer jurisdirction = Token.getJurisdirction(token);
 
         ErrorMessage fail = new ErrorMessage("权限不足");
         SuccessMessage success = new SuccessMessage();
@@ -175,7 +175,7 @@ public class DormitoryManager {
         else {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             DeleteInterface deleteInterface = session.getMapper(DeleteInterface.class);
-            Integer effect=deleteInterface.DeleteAccommendation(id);
+            Integer effect=deleteInterface.deleteAccommendationById(id);
             if(effect!=1){
                 fail.setErrMsg("住宿信息不存在");
                 return fail;

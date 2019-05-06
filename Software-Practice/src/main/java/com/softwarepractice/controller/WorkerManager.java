@@ -33,7 +33,7 @@ public class WorkerManager {
 
     @RequestMapping(value = "/getAllWorkers", method = RequestMethod.GET)
     @ResponseBody
-    public MessageInterface GetAllWorkers(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
+    public MessageInterface getAllWorkers(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
         if (pageNum < 0 || pageSize <= 0)
             throw new Exception("Num Error");
         else {
@@ -43,7 +43,7 @@ public class WorkerManager {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<Worker> workerList = selectInterface.FindWorkerAll();
+            List<Worker> workerList = selectInterface.findWorkerAll();
             PageInfo<Worker> workerPageInfo = new PageInfo<>(workerList);
             Response response=new Response(workerPageInfo);
             session.close();
@@ -53,9 +53,9 @@ public class WorkerManager {
 
     @RequestMapping(value = "/saveWorker", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface AddWorkers(@RequestBody Map<String, Object> worker_map, HttpServletRequest request) throws Exception {
+    public MessageInterface addWorkers(@RequestBody Map<String, Object> worker_map, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
-        Integer jurisdirction = Token.GetJurisdirction(token);
+        Integer jurisdirction = Token.getJurisdirction(token);
 
         ErrorMessage fail=new ErrorMessage("权限不足");
         SuccessMessage success=new SuccessMessage();
@@ -72,7 +72,7 @@ public class WorkerManager {
 
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             InsertInterface insertInterface = session.getMapper(InsertInterface.class);
-            Integer effect=insertInterface.InsertWorker(worker);
+            Integer effect=insertInterface.insertWorker(worker);
             session.commit();
             session.close();
             if(effect!=1){
@@ -86,9 +86,9 @@ public class WorkerManager {
 
     @RequestMapping(value = "/removeById", method = RequestMethod.GET)
     @ResponseBody
-    public MessageInterface DeleteWorker(Integer id,HttpServletRequest request) throws Exception{
+    public MessageInterface deleteWorker(Integer id,HttpServletRequest request) throws Exception{
         String token = request.getHeader("token");
-        Integer jurisdirction = Token.GetJurisdirction(token);
+        Integer jurisdirction = Token.getJurisdirction(token);
 
         ErrorMessage fail=new ErrorMessage("权限不足");
         SuccessMessage success=new SuccessMessage();
@@ -98,7 +98,7 @@ public class WorkerManager {
         else {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             DeleteInterface deleteInterface = session.getMapper(DeleteInterface.class);
-            Integer effect=deleteInterface.DeleteWorkerById(id);
+            Integer effect=deleteInterface.deleteWorkerById(id);
             session.commit();
             session.close();
 

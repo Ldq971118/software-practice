@@ -13,33 +13,33 @@ import java.util.List;
 
 @Mapper
 public interface SelectInterface {
-    Admin SelectAdmin(Integer worker_id);
-    List<Worker> FindWorkerAll();
-    List<feeMessage> FindFeeAll(@Param("jurisdirction") Integer jurisdirction);
-    List<feeMessage> FindFeeByType(@Param("jurisdirction")Integer jurisdirction,Integer type);
-    List<RepairMessage> FindRepairAll(@Param("jurisdirction")Integer jurisdirction);
-    List<ComplaintMessage> FindComplaintAll(@Param("jurisdirction")Integer jurisdirction);
-    List<Questionnaire> FindQuestionnaireAll(@Param("jurisdirction")Integer jurisdirction);
+    Admin selectAdminByWorkerId(Integer worker_id);
+    List<Worker> findWorkerAll();
+    List<feeMessage> findFeeAll(@Param("jurisdirction") Integer jurisdirction);
+    List<feeMessage> findFeeByType(@Param("jurisdirction")Integer jurisdirction,Integer type);
+    List<RepairMessage> findRepairAll(@Param("jurisdirction")Integer jurisdirction);
+    List<ComplaintMessage> findComplaintAll(@Param("jurisdirction")Integer jurisdirction);
+    List<Questionnaire> findQuestionnaireAll(@Param("jurisdirction")Integer jurisdirction);
 
     //获取问卷详细
-    Questionnaire SelectQuestionnaire(Integer id);
-    List<Question> FindQuestionAll(Integer questionnaire_id);
-    List<Options> FindOptionsAll(Integer question_id);
+    Questionnaire selectQuestionnaireById(Integer id);
+    List<Question> findQuestionAllByQuestionaireId(Integer questionnaire_id);
+    List<Options> findOptionsAllByQuestionId(Integer question_id);
 
-    Dormitory SelectDormitoryById(Dormitory dormitory);
-    Dormitory SelectDormitory(Dormitory dormitory);
-    Student SelectStudent(Student student);
-    List<AccommendationMessage> FindAccommendationAll(@Param("zone") Integer zone);
+    Dormitory selectDormitoryById(Dormitory dormitory);
+    Dormitory selectDormitory(Dormitory dormitory);
+    Student selectStudentByStudentId(Student student);
+    List<AccommendationMessage> findAccommendationAll(@Param("zone") Integer zone);
 
-    List<InformationsMessage> FindInformationAll();
-    Worker SelectWorker(Integer worker_id);
-    Worker SelectWorkerById(Integer id);
-    Information SelectInformation(Integer id);
+    List<InformationsMessage> findInformationAll();
+    Worker selectWorkerByWorkerId(Integer worker_id);
+    Worker selectWorkerById(Integer id);
+    Information selectInformationById(Integer id);
 
-    List<Student> FindStudentAll();
-    List<Student> FindStudentBySome(@Param("zone") Integer zone,
+    List<Student> findStudentAll();
+    List<Student> findStudentBySome(@Param("zone") Integer zone,
                                     @Param("building") Integer building,
                                     @Param("room") Integer room);
-    List<Push> FindPushBySid(Integer s_id);
+    List<Push> findPushBySid(Integer s_id);
 //    List<Dormitory> FindDormitoryAll();
 }

@@ -11,7 +11,7 @@ public class AllExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public MessageInterface MyExceptionHandler(Exception t) {
+    public MessageInterface myExceptionHandler(Exception t) {
         ErrorMessage errorMessage=new ErrorMessage("系统错误");
         if(t.getMessage()==null);
 //        else if (t.getMessage().equals("Num Error"))
