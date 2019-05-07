@@ -1,20 +1,19 @@
-package com.softwarepractice.controller;
+package com.softwarepractice.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.softwarepractice.dao.InsertInterface;
 import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.dao.UpdateInterface;
-import com.softwarepractice.entity.Dormitory;
 import com.softwarepractice.entity.Information;
 import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.PostInformation;
 import com.softwarepractice.function.Token;
+import com.softwarepractice.message.Error;
 import com.softwarepractice.message.MessageInterface;
-import com.softwarepractice.message.error.ErrorMessage;
-import com.softwarepractice.message.medium.InformationsMessage;
-import com.softwarepractice.message.medium.Response;
-import com.softwarepractice.message.success.SuccessMessage;
+import com.softwarepractice.message.Success;
+import com.softwarepractice.message.information.InformationsMessage;
+import com.softwarepractice.message.Response;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +47,8 @@ public class InformationManager {
         SelectInterface selectInterface=sqlSession.getMapper(SelectInterface.class);
         Worker worker=selectInterface.selectWorkerByWorkerId((Integer) data_map.get("workerId"));
         if(worker==null){
-            ErrorMessage errorMessage=new ErrorMessage("推送失败");
-            return errorMessage;
+            Error error =new Error("推送失败");
+            return error;
         }
 
         Information information=new Information();
@@ -69,10 +68,10 @@ public class InformationManager {
         sqlSession.commit();
         sqlSession.close();
         if(effect!=1){
-            ErrorMessage errorMessage=new ErrorMessage("推送失败");
-            return errorMessage;
+            Error error =new Error("推送失败");
+            return error;
         }else{
-            SuccessMessage successMessage=new SuccessMessage();
+            Success success =new Success();
             postInformation.getAccess_token();
             if(zone.equals(0)){
                 postInformation.postAll(information);
@@ -80,7 +79,7 @@ public class InformationManager {
             else{
                 postInformation.postOneDorm(information);
             }
-            return successMessage;
+            return success;
         }
     }
 
@@ -110,8 +109,8 @@ public class InformationManager {
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
     @ResponseBody
     public MessageInterface updateInformation(@RequestBody Map<String,Object> data_map, HttpServletRequest request) throws Exception{
-        ErrorMessage fail=new ErrorMessage("权限不足");
-        SuccessMessage successMessage=new SuccessMessage();
+        Error fail=new Error("权限不足");
+        Success success =new Success();
 
         String token = request.getHeader("token");
         if (!Token.varify(token))
@@ -128,7 +127,7 @@ public class InformationManager {
             updateInterface.updateInformation(information);
             session.commit();
             session.close();
-            return successMessage;
+            return success;
         }else{
             session.close();
             return fail;

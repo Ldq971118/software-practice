@@ -1,4 +1,4 @@
-package com.softwarepractice.message.medium;
+package com.softwarepractice.message;
 
 import com.softwarepractice.message.MessageInterface;
 import lombok.Data;

@@ -1,17 +1,15 @@
-package com.softwarepractice.controller;
+package com.softwarepractice.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.dao.UpdateInterface;
-import com.softwarepractice.entity.Complaint;
-import com.softwarepractice.entity.Repair;
 import com.softwarepractice.function.Token;
+import com.softwarepractice.message.Error;
 import com.softwarepractice.message.MessageInterface;
-import com.softwarepractice.message.error.ErrorMessage;
+import com.softwarepractice.message.Success;
 import com.softwarepractice.message.medium.ComplaintMessage;
-import com.softwarepractice.message.medium.Response;
-import com.softwarepractice.message.success.SuccessMessage;
+import com.softwarepractice.message.Response;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,12 +65,12 @@ public class ComplaintManager {
         session.commit();
         session.close();
         if(effect!=1){
-            ErrorMessage errorMessage=new ErrorMessage("修改失败");
-            return errorMessage;
+            Error error =new Error("修改失败");
+            return error;
         }
         else{
-            SuccessMessage successMessage=new SuccessMessage();
-            return successMessage;
+            Success success =new Success();
+            return success;
         }
     }
 }

@@ -1,19 +1,19 @@
-package com.softwarepractice.message.error;
+package com.softwarepractice.message;
 
 import com.softwarepractice.message.MessageInterface;
 import lombok.Data;
 
 @Data
-public class ErrorMessage implements MessageInterface {
+public class Success implements MessageInterface {
     private Boolean success;
     private Integer code;
     private String errMsg;
     private String data;
 
-    public ErrorMessage(String errMsg) {
-        this.success=false;
-        this.code=-2001;
-        this.errMsg=errMsg;
+    public Success() {
+        this.success=true;
+        this.code=200;
+        this.errMsg="";
         this.data=null;
     }
 }

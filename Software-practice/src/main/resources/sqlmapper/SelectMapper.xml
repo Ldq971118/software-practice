@@ -35,7 +35,7 @@
         </if>
     </select>
 
-    <resultMap id="feeMessage" type="com.softwarepractice.message.fee.feeMessage">
+    <resultMap id="feeMessage" type="com.softwarepractice.message.medium.feeMessage">
         <id column="id" property="id"/>
         <result column="start_time" property="start_time"/>
         <result column="end_time" property="end_time"/>
@@ -115,7 +115,7 @@
         </if>
     </select>
 
-    <resultMap id="Information" type="com.softwarepractice.message.medium.InformationsMessage">
+    <resultMap id="Information" type="com.softwarepractice.message.information.InformationsMessage">
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="content" property="content"/>
@@ -124,7 +124,7 @@
         <result column="zone" property="zone"/>
         <result column="building" property="building"/>
         <result column="room" property="room"/>
-        <association property="worker" javaType="com.softwarepractice.message.medium.Informations_Worker">
+        <association property="worker" javaType="com.softwarepractice.message.information.InformationsWorker">
             <id column="wid" property="id"/>
             <result column="name" property="name"/>
             <result column="telephone" property="telephone"/>

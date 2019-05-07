@@ -1,4 +1,4 @@
-package com.softwarepractice.controller;
+package com.softwarepractice.service;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -7,9 +7,8 @@ import com.softwarepractice.entity.Admin;
 import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
-import com.softwarepractice.message.error.ErrorMessage;
+import com.softwarepractice.message.Error;
 import com.softwarepractice.message.login.LoginSuccess;
-import com.softwarepractice.message.success.SuccessMessage;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class UserManager {
         String username_str = (String) map.get("username");
         String passwd = (String) map.get("password");
         LoginSuccess loginSuccess;
-        ErrorMessage loginError;
+        Error loginError;
 
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
@@ -49,7 +48,7 @@ public class UserManager {
                     username, admin.getJurisdirction());
             return loginSuccess;
         } else {
-            loginError = new ErrorMessage("用户名或密码错误");
+            loginError = new Error("用户名或密码错误");
             return loginError;
         }
     }

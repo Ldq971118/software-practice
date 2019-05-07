@@ -1,4 +1,4 @@
-package com.softwarepractice.message.medium;
+package com.softwarepractice.message.information;
 
 import com.softwarepractice.message.MessageInterface;
 import lombok.Data;
@@ -14,5 +14,5 @@ public class InformationsMessage implements MessageInterface {
     private Integer zone;
     private Integer building;
     private Integer room;
-    private Informations_Worker worker;
+    private InformationsWorker worker;
 }

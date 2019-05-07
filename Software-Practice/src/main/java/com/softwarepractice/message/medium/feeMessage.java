@@ -1,4 +1,4 @@
-package com.softwarepractice.message.fee;
+package com.softwarepractice.message.medium;
 
 import com.softwarepractice.entity.Dormitory;
 import lombok.Data;

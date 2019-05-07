@@ -1,4 +1,4 @@
-package com.softwarepractice.controller;
+package com.softwarepractice.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -8,9 +8,9 @@ import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
-import com.softwarepractice.message.error.ErrorMessage;
-import com.softwarepractice.message.medium.Response;
-import com.softwarepractice.message.success.SuccessMessage;
+import com.softwarepractice.message.Error;
+import com.softwarepractice.message.Success;
+import com.softwarepractice.message.Response;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +57,8 @@ public class WorkerManager {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
-        ErrorMessage fail=new ErrorMessage("权限不足");
-        SuccessMessage success=new SuccessMessage();
+        Error fail=new Error("权限不足");
+        Success success=new Success();
 
         if (jurisdirction != 0)
             return fail;
@@ -90,8 +90,8 @@ public class WorkerManager {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
-        ErrorMessage fail=new ErrorMessage("权限不足");
-        SuccessMessage success=new SuccessMessage();
+        Error fail=new Error("权限不足");
+        Success success=new Success();
 
         if (jurisdirction != 0)
             return fail;

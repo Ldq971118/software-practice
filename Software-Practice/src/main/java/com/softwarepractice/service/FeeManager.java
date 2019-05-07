@@ -1,15 +1,12 @@
-package com.softwarepractice.controller;
+package com.softwarepractice.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
-import com.softwarepractice.message.error.ErrorMessage;
-import com.softwarepractice.message.fee.feeMessage;
-import com.softwarepractice.message.medium.Response;
-import com.softwarepractice.message.success.SuccessMessage;
-import com.sun.org.apache.bcel.internal.util.ClassPath;
+import com.softwarepractice.message.medium.feeMessage;
+import com.softwarepractice.message.Response;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/api/web/fee")
@@ -99,7 +93,7 @@ public class FeeManager {
 //    @ResponseBody
 //    public MessageInterface uploadFees(@RequestParam MultipartFile mulFile,HttpServletRequest request) throws Exception {
 //
-//        SuccessMessage successMessage=new SuccessMessage();
+//        Success successMessage=new Success();
 //
 //        //获取原始文件名称
 //        String originalFileName = mulFile.getOriginalFilename();
@@ -119,7 +113,7 @@ public class FeeManager {
 //        try {
 //            mulFile.transferTo(targetFile);
 //        } catch (IOException e) {
-//            ErrorMessage errorMessage=new ErrorMessage("上传失败");
+//            Error errorMessage=new Error("上传失败");
 //            return errorMessage;
 //        }
 //        return successMessage;

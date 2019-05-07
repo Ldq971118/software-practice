@@ -1,10 +1,10 @@
 package com.softwarepractice.dao;
 
 import com.softwarepractice.entity.*;
-import com.softwarepractice.message.fee.feeMessage;
+import com.softwarepractice.message.medium.feeMessage;
 import com.softwarepractice.message.medium.AccommendationMessage;
 import com.softwarepractice.message.medium.ComplaintMessage;
-import com.softwarepractice.message.medium.InformationsMessage;
+import com.softwarepractice.message.information.InformationsMessage;
 import com.softwarepractice.message.medium.RepairMessage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

@@ -1,4 +1,4 @@
-package com.softwarepractice.controller;
+package com.softwarepractice.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -11,14 +11,14 @@ import com.softwarepractice.entity.Question;
 import com.softwarepractice.entity.Questionnaire;
 import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.Token;
+import com.softwarepractice.message.Error;
 import com.softwarepractice.message.MessageInterface;
-import com.softwarepractice.message.error.ErrorMessage;
-import com.softwarepractice.message.medium.Response;
+import com.softwarepractice.message.Success;
+import com.softwarepractice.message.Response;
 import com.softwarepractice.message.questionnaire.Basic;
 import com.softwarepractice.message.questionnaire.OptionsData;
 import com.softwarepractice.message.questionnaire.QuestionnaireData;
 import com.softwarepractice.message.questionnaire.QuestionsData;
-import com.softwarepractice.message.success.SuccessMessage;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -43,8 +42,8 @@ public class QuestionnaireManager {
     @RequestMapping(value = "/postQuestionnaire", method = RequestMethod.POST)
     @ResponseBody
     public MessageInterface addQuestionnaire(@RequestBody String params, HttpServletRequest request) throws Exception {
-        ErrorMessage fail = new ErrorMessage("问卷发布失败");
-        SuccessMessage success = new SuccessMessage();
+        Error fail = new Error("问卷发布失败");
+        Success success = new Success();
 
         String token = request.getHeader("token");
         if (!Token.varify(token))
@@ -55,8 +54,8 @@ public class QuestionnaireManager {
         SelectInterface selectInterface=session.getMapper(SelectInterface.class);
         Worker worker=selectInterface.selectWorkerByWorkerId(jsonObject.getInteger("workerId"));
         if(worker==null){
-            ErrorMessage errorMessage=new ErrorMessage("问卷发布失败");
-            return errorMessage;
+            Error error =new Error("问卷发布失败");
+            return error;
         }
 
         //basic information
