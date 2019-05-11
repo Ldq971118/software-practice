@@ -104,8 +104,12 @@ public class FeeManager {
         System.out.println("原始文件名称：" + originalFileName);
 
         //获取文件类型，以最后一个`.`作为标识
-        String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+        String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
         System.out.println("文件类型：" + type);
+        if(type!="xls"||type!="xlsx"){
+            Error error=new Error("上传失败");
+            return error;
+        }
 
         //设置文件新名字
         String fileName = System.currentTimeMillis() + "." + type;
