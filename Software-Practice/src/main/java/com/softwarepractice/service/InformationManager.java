@@ -19,14 +19,19 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @RequestMapping("/api/web/information")
-@Controller
+@Service
 @CrossOrigin
 public class InformationManager {
 
@@ -38,8 +43,9 @@ public class InformationManager {
     @ResponseBody
     public MessageInterface postInformation(@RequestBody Map<String,Object> data_map,HttpServletRequest request) throws Exception{
         String token = request.getHeader("token");
-        if (!Token.varify(token))
+        if (!Token.varify(token)){
             throw new Exception("Token Error");
+        }
 
         Integer zone=(Integer) data_map.get("zone");
 
@@ -51,8 +57,9 @@ public class InformationManager {
             return error;
         }
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Information information=new Information();
-        information.setTime((String) data_map.get("time"));
+        information.setTime(simpleDateFormat.format(new Date()));
         information.setContent((String) data_map.get("content"));
         information.setTitle((String) data_map.get("title"));
         information.setBuilding((Integer) data_map.get("building"));
@@ -88,12 +95,14 @@ public class InformationManager {
     @RequestMapping(value = "/getAllInformations", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface getAllInformations(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
-        if (pageNum < 0 || pageSize <= 0)
+        if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
+        }
         else {
             String token = request.getHeader("token");
-            if (!Token.varify(token))
+            if (!Token.varify(token)){
                 throw new Exception("Token Error");
+            }
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
@@ -113,8 +122,9 @@ public class InformationManager {
         Success success =new Success();
 
         String token = request.getHeader("token");
-        if (!Token.varify(token))
+        if (!Token.varify(token)) {
             throw new Exception("Token Error");
+        }
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
         Information information=selectInterface.selectInformationById((Integer)data_map.get("id"));
