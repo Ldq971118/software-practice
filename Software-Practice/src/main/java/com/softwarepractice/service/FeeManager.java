@@ -27,7 +27,8 @@ import java.util.List;
 @CrossOrigin
 public class FeeManager {
 
-    private static final String path="D:\\software-practice\\Software-Practice\\uploads";
+    private static final String path = "D:\\software-practice\\Software-Practice\\uploads";
+    private static final String[] format = new String[]{"xls", "xlsx"};
 
     @Autowired
     @Qualifier("sqlSessionFactory")
@@ -36,12 +37,14 @@ public class FeeManager {
     @RequestMapping(value = "/getAllFees", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface getAllFees(Integer pageNum, Integer pageSize, Integer type, HttpServletRequest request) throws Exception {
-        if (pageNum < 0 || pageSize <= 0)
+        if (pageNum < 0 || pageSize <= 0){
             throw new Exception("Num Error");
+        }
         else {
             String token = request.getHeader("token");
-            if (!Token.varify(token))
+            if (!Token.varify(token)) {
                 throw new Exception("Token Error");
+            }
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
@@ -95,33 +98,36 @@ public class FeeManager {
 
     @RequestMapping(value = "/uploadFees", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface uploadFees(@RequestParam MultipartFile mulFile, HttpServletRequest request) throws Exception {
+    public MessageInterface uploadFees(@RequestParam("file") MultipartFile mulFile, HttpServletRequest request) throws Exception {
 
-        Success successMessage=new Success();
+        String token = request.getHeader("token");
+        if (!Token.varify(token)) {
+            throw new Exception("Token Error");
+        }
+
+        Success successMessage = new Success();
 
         //获取原始文件名称
         String originalFileName = mulFile.getOriginalFilename();
-        System.out.println("原始文件名称：" + originalFileName);
-
         //获取文件类型，以最后一个`.`作为标识
         String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
-        System.out.println("文件类型：" + type);
-        if(type!="xls"||type!="xlsx"){
-            Error error=new Error("上传失败");
+
+        if (!type.equals(format[0]) || !type.equals(format[1])) {
+            Error error = new Error("上传失败");
             return error;
         }
 
         //设置文件新名字
-        String fileName = System.currentTimeMillis() + "." + type;
-        System.out.println("文件新名称：" + fileName);
+        String fileName = System.currentTimeMillis() + "fee" + "." + type;
+
         //在指定路径创建一个文件
-        File targetFile = new File(path,fileName);
+        File targetFile = new File(path, fileName);
 
         //将文件保存到服务器指定位置
         try {
             mulFile.transferTo(targetFile);
         } catch (IOException e) {
-            Error error=new Error("上传失败");
+            Error error = new Error("上传失败");
             return error;
         }
         return successMessage;

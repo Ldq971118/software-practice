@@ -22,8 +22,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +34,9 @@ import java.util.Map;
 @RequestMapping("/api/web/dormitory")
 @CrossOrigin
 public class DormitoryManager {
+
+    private static final String path = "D:\\software-practice\\Software-Practice\\uploads";
+    private static final String[] format = new String[]{"xls", "xlsx"};
 
     @Autowired
     @Qualifier("sqlSessionFactory")
@@ -46,8 +52,9 @@ public class DormitoryManager {
         Error fail = new Error("权限不足");
         Success success = new Success();
 
-        if (jurisdirction != 0)
+        if (jurisdirction != 0) {
             return fail;
+        }
         else {
             //init Dormitory
             Dormitory dormitory = new Dormitory();
@@ -80,8 +87,9 @@ public class DormitoryManager {
                     fail.setErrMsg("添加失败");
                     return fail;
                 }
-            } else
+            } else {
                 student.setId(exist_stu.getId());
+            }
 
             Accommendation accommendation = new Accommendation();
             accommendation.setD_id(selectDormitory.getId());
@@ -102,12 +110,14 @@ public class DormitoryManager {
     @ResponseBody
     public MessageInterface getAllDormitories(Integer pageNum, Integer pageSize, HttpServletRequest request)
             throws Exception {
-        if (pageNum < 0 || pageSize <= 0)
+        if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
+        }
         else {
             String token = request.getHeader("token");
-            if (!Token.varify(token))
+            if (!Token.varify(token)) {
                 throw new Exception("Token Error");
+            }
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
@@ -131,8 +141,9 @@ public class DormitoryManager {
         Error fail = new Error("权限不足");
         Success success = new Success();
 
-        if (jurisdirction != 0)
+        if (jurisdirction != 0) {
             return fail;
+        }
         else {
             Integer id= (Integer) datamap.get("id");
             Dormitory dormitory=new Dormitory();
@@ -171,8 +182,9 @@ public class DormitoryManager {
         Error fail = new Error("权限不足");
         Success success = new Success();
 
-        if (jurisdirction != 0)
+        if (jurisdirction != 0) {
             return fail;
+        }
         else {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             DeleteInterface deleteInterface = session.getMapper(DeleteInterface.class);
@@ -185,5 +197,43 @@ public class DormitoryManager {
             session.close();
             return success;
         }
+    }
+
+    @RequestMapping(value = "/uploadDorms", method = RequestMethod.POST)
+    @ResponseBody
+    public MessageInterface uploadDorms(@RequestParam("file") MultipartFile mulFile, HttpServletRequest request) throws Exception {
+
+        String token = request.getHeader("token");
+        if (!Token.varify(token)) {
+            throw new Exception("Token Error");
+        }
+
+        Success successMessage = new Success();
+
+        //获取原始文件名称
+        String originalFileName = mulFile.getOriginalFilename();
+
+        //获取文件类型，以最后一个`.`作为标识
+        String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
+
+        if (!type.equals(format[0]) || !type.equals(format[1])) {
+            Error error = new Error("上传失败");
+            return error;
+        }
+
+        //设置文件新名字
+        String fileName = System.currentTimeMillis() + "dorm" + "." + type;
+
+        //在指定路径创建一个文件
+        File targetFile = new File(path, fileName);
+
+        //将文件保存到服务器指定位置
+        try {
+            mulFile.transferTo(targetFile);
+        } catch (IOException e) {
+            Error error = new Error("上传失败");
+            return error;
+        }
+        return successMessage;
     }
 }

@@ -18,8 +18,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +34,9 @@ public class WorkerManager {
     @Autowired
     @Qualifier("sqlSessionFactory")
     private SqlSessionFactoryBean sqlSessionFactoryBean;
+
+    private static final String path = "D:\\software-practice\\Software-Practice\\uploads";
+    private static final String[] format = new String[]{"xls", "xlsx"};
 
     @RequestMapping(value = "/getAllWorkers", method = RequestMethod.GET)
     @ResponseBody
@@ -46,7 +52,7 @@ public class WorkerManager {
             PageHelper.startPage(pageNum, pageSize);
             List<Worker> workerList = selectInterface.findWorkerAll();
             PageInfo<Worker> workerPageInfo = new PageInfo<>(workerList);
-            Response response=new Response(workerPageInfo);
+            Response response = new Response(workerPageInfo);
             session.close();
             return response;
         }
@@ -58,11 +64,12 @@ public class WorkerManager {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
-        Error fail=new Error("权限不足");
-        Success success=new Success();
+        Error fail = new Error("权限不足");
+        Success success = new Success();
 
-        if (jurisdirction != 0)
+        if (jurisdirction != 0) {
             return fail;
+        }
         else {
             //init worker
             Worker worker = new Worker();
@@ -73,43 +80,85 @@ public class WorkerManager {
 
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             InsertInterface insertInterface = session.getMapper(InsertInterface.class);
-            Integer effect=insertInterface.insertWorker(worker);
+            Integer effect = insertInterface.insertWorker(worker);
             session.commit();
             session.close();
-            if(effect!=1){
+            if (effect != 1) {
                 fail.setErrMsg("添加失败");
                 return fail;
-            }
-            else
+            } else
                 return success;
         }
     }
 
     @RequestMapping(value = "/removeById", method = RequestMethod.GET)
     @ResponseBody
-    public MessageInterface deleteWorker(Integer id,HttpServletRequest request) throws Exception{
+    public MessageInterface deleteWorker(Integer id, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
-        Error fail=new Error("权限不足");
-        Success success=new Success();
+        Error fail = new Error("权限不足");
+        Success success = new Success();
 
         if (jurisdirction != 0)
             return fail;
         else {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             DeleteInterface deleteInterface = session.getMapper(DeleteInterface.class);
-            Integer effect=deleteInterface.deleteWorkerById(id);
+            Integer effect = deleteInterface.deleteWorkerById(id);
             session.commit();
             session.close();
 
-            if(effect!=1){
+            if (effect != 1) {
                 fail.setCode(404);
                 fail.setErrMsg("找不到对应的员工id");
                 return fail;
-            }
-            else
+            } else {
                 return success;
+            }
         }
+    }
+
+    @RequestMapping(value = "/uploadWorkers", method = RequestMethod.POST)
+    @ResponseBody
+    public MessageInterface uploadWorkers(@RequestParam("file") MultipartFile mulFile, HttpServletRequest request) throws Exception {
+
+        String token = request.getHeader("token");
+        if (!Token.varify(token)) {
+            throw new Exception("Token Error");
+        }
+        Integer jurisdirction = Token.getJurisdirction(token);
+        if (jurisdirction != 0) {
+            Error fail = new Error("权限不足");
+            return fail;
+        }
+
+        Success successMessage = new Success();
+
+        //获取原始文件名称
+        String originalFileName = mulFile.getOriginalFilename();
+
+        //获取文件类型，以最后一个`.`作为标识
+        String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
+
+        if (!type.equals(format[0]) || !type.equals(format[1])) {
+            Error error = new Error("上传失败");
+            return error;
+        }
+
+        //设置文件新名字
+        String fileName = System.currentTimeMillis() + "worker" + "." + type;
+
+        //在指定路径创建一个文件
+        File targetFile = new File(path, fileName);
+
+        //将文件保存到服务器指定位置
+        try {
+            mulFile.transferTo(targetFile);
+        } catch (IOException e) {
+            Error error = new Error("上传失败");
+            return error;
+        }
+        return successMessage;
     }
 }
