@@ -18,8 +18,9 @@ public class AllExceptionHandler {
 //            error = new Error("参数[pageNum]错误，不能是负数");
 //        else if (t.getMessage().equals("Token Error"))
 //            error = new Error("Token错误");
-        else
+        else {
             error.setErrMsg(t.getMessage());
+        }
         return error;
     }
 }

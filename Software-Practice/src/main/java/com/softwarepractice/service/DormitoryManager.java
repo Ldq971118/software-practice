@@ -207,6 +207,10 @@ public class DormitoryManager {
         if (!Token.varify(token)) {
             throw new Exception("Token Error");
         }
+        if (Token.getJurisdirction(token) != 0) {
+            Error fail = new Error("权限不足");
+            return fail;
+        }
 
         Success successMessage = new Success();
 

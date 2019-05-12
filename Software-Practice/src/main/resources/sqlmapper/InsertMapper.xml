@@ -42,5 +42,12 @@
         VALUES(#{title},#{content},#{time},#{w_id},#{zone},#{building},#{room})
     </insert>
 
+    <insert id="insertFee" parameterType="com.softwarepractice.entity.Fee">
+        INSERT INTO fee(d_id,last_month_quantity,current_month_quantity,start_time,
+        end_time,unit_price,free_quantity,amount,status,type)
+        VALUES(#{d_id},#{last_month_quantity},#{current_month_quantity},#{start_time},
+        #{end_time},#{unit_price},#{free_quantity},#{amount},#{status},#{type})
+    </insert>
+
 
 </mapper>

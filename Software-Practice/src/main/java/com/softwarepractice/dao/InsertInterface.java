@@ -12,4 +12,5 @@ public interface InsertInterface {
     Integer insertAccommendation(Accommendation accommendation);
     Integer insertStudent(Student student);
     Integer insertInformation(Information information);
+    Integer insertFee(Fee fee);
 }

@@ -1,7 +1,11 @@
 package com.softwarepractice.function;
 
 import com.softwarepractice.dao.InsertInterface;
+import com.softwarepractice.dao.SelectInterface;
+import com.softwarepractice.entity.Dormitory;
+import com.softwarepractice.entity.Fee;
 import com.softwarepractice.entity.Worker;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -41,23 +45,57 @@ public class ImportData {
         this.type = type;
     }
 
-    public void importWorkers() throws Exception {
+    public boolean importWorkers() throws Exception {
         List<List<String>> results=analyzAny();
         SqlSession sqlSession = sqlSessionFactory.openSession();
         InsertInterface insertInterface=sqlSession.getMapper(InsertInterface.class);
-        for(int i=0;i<results.size();i++){
-            List<String> workerParam=results.get(i);
+        for(int i=1;i<results.size();i++){
+            List<String> workerParams=results.get(i);
             Worker worker=new Worker();
-            worker.setName(workerParam.get(0));
-            worker.setWorker_id(Integer.parseInt(workerParam.get(1)));
-            worker.setTelephone(workerParam.get(2));
-            worker.setType(workerParam.get(3));
+            worker.setName(workerParams.get(0));
+            worker.setWorker_id(Integer.parseInt(workerParams.get(1)));
+            worker.setTelephone(workerParams.get(2));
+            worker.setType(workerParams.get(3));
             insertInterface.insertWorker(worker);
         }
         sqlSession.commit();
+        return true;
     }
 
+    public boolean imporFees() throws Exception {
+        List<List<String>> results=analyzAny();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        InsertInterface insertInterface=sqlSession.getMapper(InsertInterface.class);
+        SelectInterface selectInterface=sqlSession.getMapper(SelectInterface.class);
+        for(int i=1;i<results.size();i++){
+            List<String> feeParams=results.get(i);
+            Fee fee=new Fee();
+            fee.setLast_month_quantity(Float.parseFloat(feeParams.get(0)));
+            fee.setCurrent_month_quantity(Float.parseFloat(feeParams.get(1)));
+            fee.setStart_time(feeParams.get(2));
+            fee.setEnd_time(feeParams.get(3));
+            fee.setUnit_price(Float.parseFloat(feeParams.get(4)));
+            fee.setFree_quantity(Float.parseFloat(feeParams.get(5)));
+            fee.setAmount(Float.parseFloat(feeParams.get(6)));
+            fee.setStatus(0);
+            fee.setType(Integer.parseInt(feeParams.get(7)));
 
+            Dormitory dormitory=new Dormitory();
+            dormitory.setZone(Integer.parseInt(feeParams.get(8)));
+            dormitory.setBuilding(Integer.parseInt(feeParams.get(9)));
+            dormitory.setRoom(Integer.parseInt(feeParams.get(10)));
+
+            dormitory=selectInterface.selectDormitory(dormitory);
+            if(dormitory!=null){
+                fee.setD_id(dormitory.getId());
+                insertInterface.insertFee(fee);
+            }else{
+                return false;
+            }
+        }
+        sqlSession.commit();
+        return true;
+    }
 
 
 
