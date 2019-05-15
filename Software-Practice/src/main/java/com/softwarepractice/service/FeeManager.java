@@ -3,6 +3,7 @@ package com.softwarepractice.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.softwarepractice.dao.SelectInterface;
+import com.softwarepractice.function.ImportData;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
@@ -37,10 +38,9 @@ public class FeeManager {
     @RequestMapping(value = "/getAllFees", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface getAllFees(Integer pageNum, Integer pageSize, Integer type, HttpServletRequest request) throws Exception {
-        if (pageNum < 0 || pageSize <= 0){
+        if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
-        }
-        else {
+        } else {
             String token = request.getHeader("token");
             if (!Token.varify(token)) {
                 throw new Exception("Token Error");
@@ -105,14 +105,12 @@ public class FeeManager {
             throw new Exception("Token Error");
         }
 
-        Success successMessage = new Success();
-
         //获取原始文件名称
         String originalFileName = mulFile.getOriginalFilename();
         //获取文件类型，以最后一个`.`作为标识
         String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
 
-        if (!type.equals(format[0]) || !type.equals(format[1])) {
+        if (!type.equals(format[0]) && !type.equals(format[1])) {
             Error error = new Error("上传失败");
             return error;
         }
@@ -130,6 +128,21 @@ public class FeeManager {
             Error error = new Error("上传失败");
             return error;
         }
-        return successMessage;
+
+        ImportData importData;
+        if (type.equals(format[0])) {
+            importData = new ImportData(targetFile, 0);
+        } else {
+            importData = new ImportData(targetFile, 1);
+        }
+
+        boolean result = importData.imporFees();
+        if (result) {
+            Success successMessage = new Success();
+            return successMessage;
+        } else {
+            Error fail = new Error("上传失败");
+            return fail;
+        }
     }
 }

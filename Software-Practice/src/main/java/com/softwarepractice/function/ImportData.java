@@ -2,15 +2,13 @@ package com.softwarepractice.function;
 
 import com.softwarepractice.dao.InsertInterface;
 import com.softwarepractice.dao.SelectInterface;
-import com.softwarepractice.entity.Dormitory;
-import com.softwarepractice.entity.Fee;
-import com.softwarepractice.entity.Worker;
-import org.apache.ibatis.annotations.Select;
+import com.softwarepractice.entity.*;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -19,11 +17,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ImportData {
@@ -46,12 +41,12 @@ public class ImportData {
     }
 
     public boolean importWorkers() throws Exception {
-        List<List<String>> results=analyzAny();
+        List<List<String>> results = analyzAny();
         SqlSession sqlSession = sqlSessionFactory.openSession();
-        InsertInterface insertInterface=sqlSession.getMapper(InsertInterface.class);
-        for(int i=1;i<results.size();i++){
-            List<String> workerParams=results.get(i);
-            Worker worker=new Worker();
+        InsertInterface insertInterface = sqlSession.getMapper(InsertInterface.class);
+        for (int i = 1; i < results.size(); i++) {
+            List<String> workerParams = results.get(i);
+            Worker worker = new Worker();
             worker.setName(workerParams.get(0));
             worker.setWorker_id(Integer.parseInt(workerParams.get(1)));
             worker.setTelephone(workerParams.get(2));
@@ -63,13 +58,13 @@ public class ImportData {
     }
 
     public boolean imporFees() throws Exception {
-        List<List<String>> results=analyzAny();
+        List<List<String>> results = analyzAny();
         SqlSession sqlSession = sqlSessionFactory.openSession();
-        InsertInterface insertInterface=sqlSession.getMapper(InsertInterface.class);
-        SelectInterface selectInterface=sqlSession.getMapper(SelectInterface.class);
-        for(int i=1;i<results.size();i++){
-            List<String> feeParams=results.get(i);
-            Fee fee=new Fee();
+        InsertInterface insertInterface = sqlSession.getMapper(InsertInterface.class);
+        SelectInterface selectInterface = sqlSession.getMapper(SelectInterface.class);
+        for (int i = 1; i < results.size(); i++) {
+            List<String> feeParams = results.get(i);
+            Fee fee = new Fee();
             fee.setLast_month_quantity(Float.parseFloat(feeParams.get(0)));
             fee.setCurrent_month_quantity(Float.parseFloat(feeParams.get(1)));
             fee.setStart_time(feeParams.get(2));
@@ -80,16 +75,16 @@ public class ImportData {
             fee.setStatus(0);
             fee.setType(Integer.parseInt(feeParams.get(7)));
 
-            Dormitory dormitory=new Dormitory();
+            Dormitory dormitory = new Dormitory();
             dormitory.setZone(Integer.parseInt(feeParams.get(8)));
             dormitory.setBuilding(Integer.parseInt(feeParams.get(9)));
             dormitory.setRoom(Integer.parseInt(feeParams.get(10)));
 
-            dormitory=selectInterface.selectDormitory(dormitory);
-            if(dormitory!=null){
+            dormitory = selectInterface.selectDormitory(dormitory);
+            if (dormitory != null) {
                 fee.setD_id(dormitory.getId());
                 insertInterface.insertFee(fee);
-            }else{
+            } else {
                 return false;
             }
         }
@@ -97,8 +92,48 @@ public class ImportData {
         return true;
     }
 
+    public boolean importAccommendation() throws Exception {
+        List<List<String>> results = analyzAny();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        InsertInterface insertInterface = sqlSession.getMapper(InsertInterface.class);
+        SelectInterface selectInterface = sqlSession.getMapper(SelectInterface.class);
+        for (int i = 1; i < results.size(); i++) {
+            List<String> stuParams = results.get(i);
+            Student student = new Student();
+            student.setName(stuParams.get(0));
+            student.setStudent_id(Integer.parseInt(stuParams.get(1)));
+            student.setTelephone(stuParams.get(2));
+            student.setIs_leader(Integer.parseInt(stuParams.get(3)));
 
-
+            Dormitory dormitory = new Dormitory();
+            dormitory.setZone(Integer.parseInt(stuParams.get(4)));
+            dormitory.setBuilding(Integer.parseInt(stuParams.get(5)));
+            dormitory.setRoom(Integer.parseInt(stuParams.get(6)));
+            dormitory = selectInterface.selectDormitory(dormitory);
+            if (dormitory != null) {
+                Student stuExist = selectInterface.selectStudentByStudentId(student);
+                Accommendation accommendation = new Accommendation();
+                if (stuExist != null) {
+                    accommendation.setS_id(stuExist.getId());
+                    accommendation.setD_id(dormitory.getId());
+                } else {
+                    insertInterface.insertStudent(student);
+                    accommendation.setS_id(student.getId());
+                    accommendation.setD_id(dormitory.getId());
+                }
+                Accommendation accomExist = selectInterface.selectAccommendation(accommendation);
+                if (accomExist != null) {
+                    continue;
+                } else {
+                    insertInterface.insertAccommendation(accommendation);
+                }
+            } else {
+                return false;
+            }
+        }
+        sqlSession.commit();
+        return true;
+    }
 
 
     public List<List<String>> analyzAny() throws Exception {
@@ -109,11 +144,12 @@ public class ImportData {
         if (type.equals(0)) {
             hssfWorkbook = new HSSFWorkbook(inputStream);
             HSSFSheet sheet = hssfWorkbook.getSheetAt(0);
-            for (int i = sheet.getFirstRowNum(); i < sheet.getLastRowNum(); i++) {
+            for (int i = sheet.getFirstRowNum(); i <= sheet.getLastRowNum(); i++) {
                 List<String> cells = new ArrayList<String>();
                 Row row = sheet.getRow(i);
                 for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
                     Cell cellinfo = row.getCell(j);
+                    cellinfo.setCellType(CellType.STRING);
                     if (cellinfo == null) {
                         cells.add("");
                     } else {
@@ -125,11 +161,12 @@ public class ImportData {
         } else {
             xssfWorkbook = new XSSFWorkbook(inputStream);
             XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
-            for (int i = sheet.getFirstRowNum(); i < sheet.getLastRowNum(); i++) {
+            for (int i = sheet.getFirstRowNum(); i <= sheet.getLastRowNum(); i++) {
                 List<String> cells = new ArrayList<String>();
                 Row row = sheet.getRow(i);
                 for (int j = row.getFirstCellNum(); j < row.getLastCellNum(); j++) {
                     Cell cellinfo = row.getCell(j);
+                    cellinfo.setCellType(CellType.STRING);
                     if (cellinfo == null) {
                         cells.add("");
                     } else {

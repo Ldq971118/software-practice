@@ -6,6 +6,7 @@ import com.softwarepractice.dao.DeleteInterface;
 import com.softwarepractice.dao.InsertInterface;
 import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.entity.Worker;
+import com.softwarepractice.function.ImportData;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Error;
@@ -133,15 +134,13 @@ public class WorkerManager {
             return fail;
         }
 
-        Success successMessage = new Success();
-
         //获取原始文件名称
         String originalFileName = mulFile.getOriginalFilename();
 
         //获取文件类型，以最后一个`.`作为标识
         String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
 
-        if (!type.equals(format[0]) || !type.equals(format[1])) {
+        if (!type.equals(format[0]) && !type.equals(format[1])) {
             Error error = new Error("上传失败");
             return error;
         }
@@ -159,6 +158,21 @@ public class WorkerManager {
             Error error = new Error("上传失败");
             return error;
         }
-        return successMessage;
+
+        ImportData importData;
+        if (type.equals(format[0])) {
+            importData = new ImportData(targetFile, 0);
+        } else {
+            importData = new ImportData(targetFile, 1);
+        }
+
+        boolean result = importData.importWorkers();
+        if (result) {
+            Success successMessage = new Success();
+            return successMessage;
+        } else {
+            Error fail = new Error("上传失败");
+            return fail;
+        }
     }
 }

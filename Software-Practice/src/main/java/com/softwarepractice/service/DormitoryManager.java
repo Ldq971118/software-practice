@@ -9,6 +9,7 @@ import com.softwarepractice.dao.UpdateInterface;
 import com.softwarepractice.entity.Accommendation;
 import com.softwarepractice.entity.Dormitory;
 import com.softwarepractice.entity.Student;
+import com.softwarepractice.function.ImportData;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.Error;
 import com.softwarepractice.message.MessageInterface;
@@ -54,8 +55,7 @@ public class DormitoryManager {
 
         if (jurisdirction != 0) {
             return fail;
-        }
-        else {
+        } else {
             //init Dormitory
             Dormitory dormitory = new Dormitory();
             dormitory.setBuilding((Integer) datamap.get("building"));
@@ -112,8 +112,7 @@ public class DormitoryManager {
             throws Exception {
         if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
-        }
-        else {
+        } else {
             String token = request.getHeader("token");
             if (!Token.varify(token)) {
                 throw new Exception("Token Error");
@@ -125,7 +124,7 @@ public class DormitoryManager {
                     selectInterface.findAccommendationAll(Token.getJurisdirction(token));
             PageInfo<AccommendationMessage> accommendationMessagePageInfo =
                     new PageInfo<>(accommendationAll);
-            Response response=new Response(accommendationMessagePageInfo);
+            Response response = new Response(accommendationMessagePageInfo);
             session.close();
             return response;
         }
@@ -143,26 +142,25 @@ public class DormitoryManager {
 
         if (jurisdirction != 0) {
             return fail;
-        }
-        else {
-            Integer id= (Integer) datamap.get("id");
-            Dormitory dormitory=new Dormitory();
+        } else {
+            Integer id = (Integer) datamap.get("id");
+            Dormitory dormitory = new Dormitory();
             dormitory.setZone((Integer) datamap.get("zone"));
             dormitory.setRoom((Integer) datamap.get("room"));
             dormitory.setBuilding((Integer) datamap.get("building"));
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-            dormitory=selectInterface.selectDormitory(dormitory);
-            if(dormitory==null){
+            dormitory = selectInterface.selectDormitory(dormitory);
+            if (dormitory == null) {
                 fail.setErrMsg("宿舍信息错误");
                 return fail;
-            }else{
-                Accommendation accommendation=new Accommendation();
+            } else {
+                Accommendation accommendation = new Accommendation();
                 accommendation.setD_id(dormitory.getId());
                 accommendation.setId(id);
-                UpdateInterface updateInterface=session.getMapper(UpdateInterface.class);
-                Integer effect=updateInterface.updateAccommendation(accommendation);
-                if(effect!=1){
+                UpdateInterface updateInterface = session.getMapper(UpdateInterface.class);
+                Integer effect = updateInterface.updateAccommendation(accommendation);
+                if (effect != 1) {
                     fail.setErrMsg("住宿信息错误");
                     return fail;
                 }
@@ -175,7 +173,7 @@ public class DormitoryManager {
 
     @RequestMapping(value = "/removeById", method = RequestMethod.GET)
     @ResponseBody
-    public MessageInterface deleteAccommendation(Integer id,HttpServletRequest request) throws Exception{
+    public MessageInterface deleteAccommendation(Integer id, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
@@ -184,12 +182,11 @@ public class DormitoryManager {
 
         if (jurisdirction != 0) {
             return fail;
-        }
-        else {
+        } else {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             DeleteInterface deleteInterface = session.getMapper(DeleteInterface.class);
-            Integer effect=deleteInterface.deleteAccommendationById(id);
-            if(effect!=1){
+            Integer effect = deleteInterface.deleteAccommendationById(id);
+            if (effect != 1) {
                 fail.setErrMsg("住宿信息不存在");
                 return fail;
             }
@@ -212,15 +209,14 @@ public class DormitoryManager {
             return fail;
         }
 
-        Success successMessage = new Success();
-
         //获取原始文件名称
         String originalFileName = mulFile.getOriginalFilename();
 
         //获取文件类型，以最后一个`.`作为标识
         String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
 
-        if (!type.equals(format[0]) || !type.equals(format[1])) {
+
+        if (!type.equals(format[0]) && !type.equals(format[1])) {
             Error error = new Error("上传失败");
             return error;
         }
@@ -238,6 +234,21 @@ public class DormitoryManager {
             Error error = new Error("上传失败");
             return error;
         }
-        return successMessage;
+
+        ImportData importData;
+        if (type.equals(format[0])) {
+            importData = new ImportData(targetFile, 0);
+        } else {
+            importData = new ImportData(targetFile, 1);
+        }
+
+        boolean result = importData.importAccommendation();
+        if (result) {
+            Success successMessage = new Success();
+            return successMessage;
+        } else {
+            Error fail = new Error("上传失败");
+            return fail;
+        }
     }
 }

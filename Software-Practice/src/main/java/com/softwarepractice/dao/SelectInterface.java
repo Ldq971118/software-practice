@@ -41,5 +41,6 @@ public interface SelectInterface {
                                     @Param("building") Integer building,
                                     @Param("room") Integer room);
     List<Push> findPushBySid(Integer s_id);
+    Accommendation selectAccommendation(Accommendation accommendation);
 //    List<Dormitory> FindDormitoryAll();
 }
