@@ -177,5 +177,16 @@
         SELECT * FROM accommendation WHERE s_id=#{s_id} AND d_id=#{d_id}
     </select>
 
+    <select id="selectComplaintByIdAndZone" resultType="com.softwarepractice.entity.Complaint">
+        SELECT complaint.id,complaint.s_id,complaint.telephone,complaint.content,
+        complaint.picture,complaint.status,complaint.time
+        FROM complaint,dormitory,accommendation
+        WHERE complaint.id=#{id} AND complaint.s_id=accommendation.s_id
+        AND accommendation.d_id=dormitory.id
+        <if test="jurisdirction != 0" >
+            AND dormitory.zone=#{jurisdirction}
+        </if>
+    </select>
+
 
 </mapper>
