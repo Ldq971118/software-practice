@@ -6,5 +6,5 @@ import lombok.Data;
 public class RepairReply {
     Integer id;
     Integer r_id;
-    String content;
+    String replycontent;
 }

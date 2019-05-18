@@ -49,5 +49,14 @@
         #{end_time},#{unit_price},#{free_quantity},#{amount},#{status},#{type})
     </insert>
 
+    <insert id="insertComplaintReply" parameterType="com.softwarepractice.entity.ComplaintReply"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO creply VALUES(null,#{c_id},#{replycontent})
+    </insert>
+
+    <insert id="insertRepairReply" parameterType="com.softwarepractice.entity.RepairReply"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO rreply VALUES(null,#{r_id},#{replycontent})
+    </insert>
 
 </mapper>

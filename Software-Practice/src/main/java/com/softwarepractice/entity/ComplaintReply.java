@@ -6,5 +6,5 @@ import lombok.Data;
 public class ComplaintReply {
     Integer id;
     Integer c_id;
-    String content;
+    String replycontent;
 }

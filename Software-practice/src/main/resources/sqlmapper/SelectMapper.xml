@@ -21,7 +21,7 @@
         SELECT fee.id,fee.start_time,fee.end_time,fee.amount,fee.status,fee.type,
         dormitory.id dorm_id,dormitory.zone,dormitory.building,dormitory.room
         FROM fee,dormitory WHERE fee.d_id=dormitory.id AND fee.type=#{param2}
-        <if test="jurisdirction != 0" >
+        <if test="jurisdirction != 0">
             AND dormitory.zone=#{jurisdirction}
         </if>
     </select>
@@ -30,7 +30,7 @@
         SELECT fee.id,fee.start_time,fee.end_time,fee.amount,fee.status,fee.type,
         dormitory.id dorm_id,dormitory.zone,dormitory.building,dormitory.room
         FROM fee,dormitory WHERE fee.d_id=dormitory.id
-        <if test="jurisdirction != 0" >
+        <if test="jurisdirction != 0">
             AND dormitory.zone=#{jurisdirction}
         </if>
     </select>
@@ -53,10 +53,10 @@
     <select id="findRepairAll" resultType="com.softwarepractice.message.medium.RepairMessage">
         SELECT repair.id,repair.d_id,repair.s_id,repair.telephone,
         repair.content,repair.picture,repair.status,repair.time,
-        dormitory.zone,dormitory.building,dormitory.room,student.student_id
-        FROM repair,dormitory,student
+        dormitory.zone,dormitory.building,dormitory.room,student.student_id,rreply.replycontent
+        FROM (repair,dormitory,student) LEFT JOIN rreply ON rreply.r_id=repair.id
         WHERE repair.d_id=dormitory.id AND repair.s_id=student.id
-        <if test="jurisdirction != 0" >
+        <if test="jurisdirction != 0">
             AND dormitory.zone=#{jurisdirction}
         </if>
         ORDER BY status ASC
@@ -64,11 +64,11 @@
 
     <select id="findComplaintAll" resultType="com.softwarepractice.message.medium.ComplaintMessage">
         SELECT complaint.id,complaint.s_id,complaint.telephone,complaint.content,
-        complaint.picture,complaint.status,complaint.time,student.student_id
-        FROM complaint,dormitory,accommendation,student
+        complaint.picture,complaint.status,complaint.time,student.student_id,creply.replycontent
+        FROM (complaint,dormitory,accommendation,student) LEFT JOIN creply ON creply.c_id=complaint.id
         WHERE complaint.s_id=accommendation.s_id AND complaint.s_id=student.id
-            AND accommendation.d_id=dormitory.id
-        <if test="jurisdirction != 0" >
+        AND accommendation.d_id=dormitory.id
+        <if test="jurisdirction != 0">
             AND dormitory.zone=#{jurisdirction}
         </if>
         ORDER BY status ASC
@@ -76,7 +76,7 @@
 
     <select id="findQuestionnaireAll" resultType="com.softwarepractice.entity.Questionnaire">
         SELECT * FROM questionnaire
-        <if test="jurisdirction != 0" >
+        <if test="jurisdirction != 0">
             WHERE questionnaire.zone=#{jurisdirction}
         </if>
         ORDER BY id DESC
@@ -110,7 +110,7 @@
         SELECT a.id,s.name,s.student_id,s.telephone,d.zone,d.building,d.room
         FROM dormitory d,accommendation a,student s
         WHERE d.id=a.d_id AND a.s_id=s.id
-        <if test="zone != 0" >
+        <if test="zone != 0">
             AND d.zone=#{zone}
         </if>
     </select>
@@ -183,10 +183,19 @@
         FROM complaint,dormitory,accommendation
         WHERE complaint.id=#{id} AND complaint.s_id=accommendation.s_id
         AND accommendation.d_id=dormitory.id
-        <if test="jurisdirction != 0" >
+        <if test="jurisdirction != 0">
             AND dormitory.zone=#{jurisdirction}
         </if>
     </select>
 
+    <select id="selectRepairByIdAndZone" resultType="com.softwarepractice.entity.Repair">
+        SELECT repair.id,repair.d_id,repair.s_id,repair.telephone,
+        repair.content,repair.picture,repair.status,repair.time
+        FROM repair,dormitory
+        WHERE repair.id=#{id} AND repair.d_id=dormitory.id
+        <if test="jurisdirction != 0">
+            AND dormitory.zone=#{jurisdirction}
+        </if>
+    </select>
 
 </mapper>

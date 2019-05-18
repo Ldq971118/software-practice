@@ -2,6 +2,7 @@ package com.softwarepractice.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.softwarepractice.dao.InsertInterface;
 import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.dao.UpdateInterface;
 import com.softwarepractice.entity.Complaint;
@@ -76,26 +77,28 @@ public class ComplaintManager {
         }
     }
 
-    @RequestMapping(value = "/complaintReply", method = RequestMethod.GET)
+    @RequestMapping(value = "/complaintReply", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface complaintReply(Integer id, @RequestBody String content, HttpServletRequest request) throws Exception {
+    public MessageInterface complaintReply(@RequestBody String content, Integer id, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
         if (!Token.varify(token)) {
             throw new Exception("Token Error");
         }
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
+        InsertInterface insertInterface = session.getMapper(InsertInterface.class);
         Complaint complaint = selectInterface.
                 selectComplaintByIdAndZone(id, Token.getJurisdirction(token));
         if (complaint == null) {
             Error error = new Error("投诉不存在");
             return error;
         } else {
-            ComplaintReply complaintReply=new ComplaintReply();
+            ComplaintReply complaintReply = new ComplaintReply();
             complaintReply.setC_id(complaint.getId());
-            complaintReply.setContent(content);
-
+            complaintReply.setReplycontent(content);
+            insertInterface.insertComplaintReply(complaintReply);
         }
-        return null;
+        Success success = new Success();
+        return success;
     }
 }

@@ -62,5 +62,8 @@ public interface SelectInterface {
 
     Complaint selectComplaintByIdAndZone(@Param("id") Integer id,
                                          @Param("jurisdirction") Integer jurisdirction);
+
+    Repair selectRepairByIdAndZone(@Param("id") Integer id,
+                                         @Param("jurisdirction") Integer jurisdirction);
 //    List<Dormitory> FindDormitoryAll();
 }

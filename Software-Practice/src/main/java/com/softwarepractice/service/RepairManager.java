@@ -2,8 +2,11 @@ package com.softwarepractice.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.softwarepractice.dao.InsertInterface;
 import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.dao.UpdateInterface;
+import com.softwarepractice.entity.Repair;
+import com.softwarepractice.entity.RepairReply;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Error;
@@ -16,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -72,5 +72,30 @@ public class RepairManager {
             Success success =new Success();
             return success;
         }
+    }
+
+    @RequestMapping(value = "/repairReply", method = RequestMethod.POST)
+    @ResponseBody
+    public MessageInterface repairReply(@RequestBody String content, Integer id, HttpServletRequest request) throws Exception {
+        String token = request.getHeader("token");
+        if (!Token.varify(token)) {
+            throw new Exception("Token Error");
+        }
+        SqlSession session = sqlSessionFactoryBean.getObject().openSession();
+        SelectInterface selectInterface = session.getMapper(SelectInterface.class);
+        InsertInterface insertInterface = session.getMapper(InsertInterface.class);
+        Repair repair = selectInterface.
+                selectRepairByIdAndZone(id, Token.getJurisdirction(token));
+        if (repair == null) {
+            Error error = new Error("维修不存在");
+            return error;
+        } else {
+            RepairReply repairReply = new RepairReply();
+            repairReply.setR_id(repair.getId());
+            repairReply.setReplycontent(content);
+            insertInterface.insertRepairReply(repairReply);
+        }
+        Success success = new Success();
+        return success;
     }
 }
