@@ -69,8 +69,7 @@ public class ComplaintManager {
         session.commit();
         session.close();
         if (effect != 1) {
-            Error error = new Error("修改失败");
-            return error;
+            throw new Exception("Change Fail");
         } else {
             Success success = new Success();
             return success;
@@ -90,8 +89,7 @@ public class ComplaintManager {
         Complaint complaint = selectInterface.
                 selectComplaintByIdAndZone(id, Token.getJurisdirction(token));
         if (complaint == null) {
-            Error error = new Error("投诉不存在");
-            return error;
+            throw new Exception("No Exist");
         } else {
             ComplaintReply complaintReply = new ComplaintReply();
             complaintReply.setC_id(complaint.getId());

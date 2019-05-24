@@ -50,11 +50,10 @@ public class DormitoryManager {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
-        Error fail = new Error("权限不足");
         Success success = new Success();
 
         if (jurisdirction != 0) {
-            return fail;
+            throw new Exception("Permission Denied");
         } else {
             //init Dormitory
             Dormitory dormitory = new Dormitory();
@@ -68,8 +67,7 @@ public class DormitoryManager {
 
             Dormitory selectDormitory = selectInterface.selectDormitory(dormitory);
             if (selectDormitory == null) {
-                fail.setErrMsg("宿舍不存在");
-                return fail;
+                throw new Exception("No Exist");
             }
 
             //插入学生
@@ -84,8 +82,7 @@ public class DormitoryManager {
             if (exist_stu == null) {
                 effect = insertInterface.insertStudent(student);
                 if (effect != 1) {
-                    fail.setErrMsg("添加失败");
-                    return fail;
+                    throw new Exception("Add Fail");
                 }
             } else {
                 student.setId(exist_stu.getId());
@@ -97,8 +94,7 @@ public class DormitoryManager {
 
             effect = insertInterface.insertAccommendation(accommendation);
             if (effect != 1) {
-                fail.setErrMsg("添加失败");
-                return fail;
+                throw new Exception("Add Fail");
             }
             session.commit();
             session.close();
@@ -137,11 +133,10 @@ public class DormitoryManager {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
-        Error fail = new Error("权限不足");
         Success success = new Success();
 
         if (jurisdirction != 0) {
-            return fail;
+            throw new Exception("Permission Denied");
         } else {
             Integer id = (Integer) datamap.get("id");
             Dormitory dormitory = new Dormitory();
@@ -152,8 +147,7 @@ public class DormitoryManager {
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             dormitory = selectInterface.selectDormitory(dormitory);
             if (dormitory == null) {
-                fail.setErrMsg("宿舍信息错误");
-                return fail;
+                throw new Exception("No Exist");
             } else {
                 Accommendation accommendation = new Accommendation();
                 accommendation.setD_id(dormitory.getId());
@@ -161,8 +155,7 @@ public class DormitoryManager {
                 UpdateInterface updateInterface = session.getMapper(UpdateInterface.class);
                 Integer effect = updateInterface.updateAccommendation(accommendation);
                 if (effect != 1) {
-                    fail.setErrMsg("住宿信息错误");
-                    return fail;
+                    throw new Exception("Change Fail");
                 }
             }
             session.commit();
@@ -176,19 +169,16 @@ public class DormitoryManager {
     public MessageInterface deleteAccommendation(Integer id, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
-
-        Error fail = new Error("权限不足");
-        Success success = new Success();
+        Success success=new Success();
 
         if (jurisdirction != 0) {
-            return fail;
+            throw new Exception("Permission Denied");
         } else {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             DeleteInterface deleteInterface = session.getMapper(DeleteInterface.class);
             Integer effect = deleteInterface.deleteAccommendationById(id);
             if (effect != 1) {
-                fail.setErrMsg("住宿信息不存在");
-                return fail;
+                throw new Exception("No Exist");
             }
             session.commit();
             session.close();
@@ -205,8 +195,7 @@ public class DormitoryManager {
             throw new Exception("Token Error");
         }
         if (Token.getJurisdirction(token) != 0) {
-            Error fail = new Error("权限不足");
-            return fail;
+            throw new Exception("Permission Denied");
         }
 
         //获取原始文件名称
@@ -217,8 +206,7 @@ public class DormitoryManager {
 
 
         if (!type.equals(format[0]) && !type.equals(format[1])) {
-            Error error = new Error("上传失败");
-            return error;
+            throw new Exception("Upload Fail");
         }
 
         //设置文件新名字
@@ -231,8 +219,7 @@ public class DormitoryManager {
         try {
             mulFile.transferTo(targetFile);
         } catch (IOException e) {
-            Error error = new Error("上传失败");
-            return error;
+            throw new Exception("Upload Fail");
         }
 
         ImportData importData;
@@ -247,8 +234,7 @@ public class DormitoryManager {
             Success successMessage = new Success();
             return successMessage;
         } else {
-            Error fail = new Error("上传失败");
-            return fail;
+            throw new Exception("Import Data Fail");
         }
     }
 }

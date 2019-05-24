@@ -87,8 +87,9 @@ public class WorkerManager {
             if (effect != 1) {
                 fail.setErrMsg("添加失败");
                 return fail;
-            } else
+            } else {
                 return success;
+            }
         }
     }
 
