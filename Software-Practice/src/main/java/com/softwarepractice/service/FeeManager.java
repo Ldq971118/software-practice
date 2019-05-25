@@ -7,7 +7,6 @@ import com.softwarepractice.function.ImportData;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
-import com.softwarepractice.message.Error;
 import com.softwarepractice.message.medium.feeMessage;
 import com.softwarepractice.message.Response;
 import org.apache.ibatis.session.SqlSession;
@@ -28,7 +27,7 @@ import java.util.List;
 @CrossOrigin
 public class FeeManager {
 
-    private static final String path = "D:\\software-practice\\Software-Practice\\uploads";
+    private static final String path = "/tmp";
     private static final String[] format = new String[]{"xls", "xlsx"};
 
     @Autowired
@@ -59,12 +58,13 @@ public class FeeManager {
     @RequestMapping(value = "/getWaterFees", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface getWaterFees(Integer pageNum, Integer pageSize, Integer type, HttpServletRequest request) throws Exception {
-        if (pageNum < 0 || pageSize <= 0)
+        if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
-        else {
+        } else {
             String token = request.getHeader("token");
-            if (!Token.varify(token))
+            if (!Token.varify(token)) {
                 throw new Exception("Token Error");
+            }
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
@@ -79,12 +79,13 @@ public class FeeManager {
     @RequestMapping(value = "/getElectricityFees", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface getElectricityFees(Integer pageNum, Integer pageSize, Integer type, HttpServletRequest request) throws Exception {
-        if (pageNum < 0 || pageSize <= 0)
+        if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
-        else {
+        } else {
             String token = request.getHeader("token");
-            if (!Token.varify(token))
+            if (!Token.varify(token)) {
                 throw new Exception("Token Error");
+            }
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
@@ -111,8 +112,7 @@ public class FeeManager {
         String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
 
         if (!type.equals(format[0]) && !type.equals(format[1])) {
-            Error error = new Error("上传失败");
-            return error;
+            throw new Exception("Upload Fail");
         }
 
         //设置文件新名字
@@ -125,8 +125,7 @@ public class FeeManager {
         try {
             mulFile.transferTo(targetFile);
         } catch (IOException e) {
-            Error error = new Error("上传失败");
-            return error;
+            throw new Exception("Upload Fail");
         }
 
         ImportData importData;
@@ -137,12 +136,12 @@ public class FeeManager {
         }
 
         boolean result = importData.imporFees();
+        targetFile.delete();
         if (result) {
             Success successMessage = new Success();
             return successMessage;
         } else {
-            Error fail = new Error("上传失败");
-            return fail;
+            throw new Exception("Import Data Fail");
         }
     }
 }

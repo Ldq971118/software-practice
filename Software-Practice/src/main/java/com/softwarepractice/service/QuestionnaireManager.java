@@ -11,7 +11,6 @@ import com.softwarepractice.entity.Question;
 import com.softwarepractice.entity.Questionnaire;
 import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.Token;
-import com.softwarepractice.message.Error;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
 import com.softwarepractice.message.Response;
@@ -23,7 +22,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,20 +41,20 @@ public class QuestionnaireManager {
     @RequestMapping(value = "/postQuestionnaire", method = RequestMethod.POST)
     @ResponseBody
     public MessageInterface addQuestionnaire(@RequestBody String params, HttpServletRequest request) throws Exception {
-        Error fail = new Error("问卷发布失败");
+
         Success success = new Success();
 
         String token = request.getHeader("token");
-        if (!Token.varify(token))
+        if (!Token.varify(token)) {
             throw new Exception("Token Error");
+        }
 
         JSONObject jsonObject = JSONObject.parseObject(params);
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
-        SelectInterface selectInterface=session.getMapper(SelectInterface.class);
-        Worker worker=selectInterface.selectWorkerByWorkerId(jsonObject.getInteger("workerId"));
-        if(worker==null){
-            Error error =new Error("问卷发布失败");
-            return error;
+        SelectInterface selectInterface = session.getMapper(SelectInterface.class);
+        Worker worker = selectInterface.selectWorkerByWorkerId(jsonObject.getInteger("workerId"));
+        if (worker == null) {
+            throw new Exception("Some Dependences Not Exist");
         }
 
         //basic information
@@ -80,8 +78,9 @@ public class QuestionnaireManager {
 
         InsertInterface insertInterface = session.getMapper(InsertInterface.class);
         Integer questionnaire_effect = insertInterface.insertQuestionnaire(questionnaire);
-        if (questionnaire_effect != 1)
-            return fail;
+        if (questionnaire_effect != 1) {
+            throw new Exception("Post Fail");
+        }
 
         //questions
         Integer questionnaire_id = questionnaire.getId();
@@ -95,8 +94,9 @@ public class QuestionnaireManager {
             question.setContent(jsonlist.getJSONObject(i).getString("title"));
             question.setType(jsonlist.getJSONObject(i).getInteger("type"));
             Integer question_effect = insertInterface.insertQuestion(question);
-            if (question_effect != 1)
-                return fail;
+            if (question_effect != 1) {
+                throw new Exception("Post Fail");
+            }
             Integer question_id = question.getId();
             //get options
             JSONArray optionArray = jsonlist.getJSONObject(i).getJSONArray("options");
@@ -110,8 +110,9 @@ public class QuestionnaireManager {
                     option.setSelect_number(0);
                     option.setContent(optionArray.getJSONObject(j).getString("content"));
                     Integer option_effect = insertInterface.insertOption(option);
-                    if (option_effect != 1)
-                        return fail;
+                    if (option_effect != 1) {
+                        throw new Exception("Post Fail");
+                    }
                 }
             }
         }
@@ -124,18 +125,19 @@ public class QuestionnaireManager {
     @RequestMapping(value = "/getAllQuestionnaires", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface getAllQuestionnaire(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
-        if (pageNum < 0 || pageSize <= 0)
+        if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
-        else {
+        } else {
             String token = request.getHeader("token");
-            if (!Token.varify(token))
+            if (!Token.varify(token)) {
                 throw new Exception("Token Error");
+            }
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
             List<Questionnaire> questionnaireList = selectInterface.findQuestionnaireAll(Token.getJurisdirction(token));
             PageInfo<Questionnaire> questionnairePageInfo = new PageInfo<>(questionnaireList);
-            Response response=new Response(questionnairePageInfo);
+            Response response = new Response(questionnairePageInfo);
             session.close();
             return response;
         }
@@ -145,20 +147,21 @@ public class QuestionnaireManager {
     @ResponseBody
     public MessageInterface getQuestionnaireDetail(Integer id, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
-        if (!Token.varify(token))
+        if (!Token.varify(token)) {
             throw new Exception("Token Error");
+        }
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-        Questionnaire questionnaire=selectInterface.selectQuestionnaireById(id);
+        Questionnaire questionnaire = selectInterface.selectQuestionnaireById(id);
 
         //build json
 
-        Basic basicMessage=new Basic();
+        Basic basicMessage = new Basic();
         basicMessage.setCode(200);
         basicMessage.setSuccess(true);
         basicMessage.setErrMsg("");
 
-        QuestionnaireData questionnaireData=new QuestionnaireData();
+        QuestionnaireData questionnaireData = new QuestionnaireData();
         questionnaireData.setId(questionnaire.getId());
         questionnaireData.setStart_time(questionnaire.getStart_time());
         questionnaireData.setEnd_time(questionnaire.getEnd_time());
@@ -169,17 +172,17 @@ public class QuestionnaireManager {
         questionnaireData.setWorkerId(questionnaire.getW_id());
 
         List<Question> questions = selectInterface.findQuestionAllByQuestionaireId(questionnaire.getId());
-        List<QuestionsData> questionsData=new ArrayList<>();
+        List<QuestionsData> questionsData = new ArrayList<>();
 
-        for(int i=0;i<questions.size();i++){
-            Question question=questions.get(i);
-            QuestionsData questionstemp=new QuestionsData();
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            QuestionsData questionstemp = new QuestionsData();
             questionstemp.setText(question.getContent());
 
-            List<Options> options=selectInterface.findOptionsAllByQuestionId(question.getId());
-            List<OptionsData> optionsData=new ArrayList<>();
-            for(int j=0;j<options.size();j++){
-                OptionsData optionstemp=new OptionsData();
+            List<Options> options = selectInterface.findOptionsAllByQuestionId(question.getId());
+            List<OptionsData> optionsData = new ArrayList<>();
+            for (int j = 0; j < options.size(); j++) {
+                OptionsData optionstemp = new OptionsData();
                 optionstemp.setText(options.get(j).getContent());
                 optionstemp.setSelectNum(options.get(j).getSelect_number());
                 optionsData.add(optionstemp);

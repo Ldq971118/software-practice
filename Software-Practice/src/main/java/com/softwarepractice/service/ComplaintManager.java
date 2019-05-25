@@ -8,7 +8,7 @@ import com.softwarepractice.dao.UpdateInterface;
 import com.softwarepractice.entity.Complaint;
 import com.softwarepractice.entity.ComplaintReply;
 import com.softwarepractice.function.Token;
-import com.softwarepractice.message.Error;
+
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
 import com.softwarepractice.message.medium.ComplaintMessage;
@@ -17,13 +17,13 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
+
 
 @Service
 @RequestMapping("/api/web/complaint")

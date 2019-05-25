@@ -11,7 +11,7 @@ import com.softwarepractice.entity.Dormitory;
 import com.softwarepractice.entity.Student;
 import com.softwarepractice.function.ImportData;
 import com.softwarepractice.function.Token;
-import com.softwarepractice.message.Error;
+
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
 import com.softwarepractice.message.medium.AccommendationMessage;
@@ -20,7 +20,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +36,7 @@ import java.util.Map;
 @CrossOrigin
 public class DormitoryManager {
 
-    private static final String path = "D:\\software-practice\\Software-Practice\\uploads";
+    private static final String path = "/tmp";
     private static final String[] format = new String[]{"xls", "xlsx"};
 
     @Autowired
@@ -230,6 +230,7 @@ public class DormitoryManager {
         }
 
         boolean result = importData.importAccommendation();
+        targetFile.delete();
         if (result) {
             Success successMessage = new Success();
             return successMessage;

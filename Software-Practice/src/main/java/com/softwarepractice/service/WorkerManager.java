@@ -9,14 +9,12 @@ import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.ImportData;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
-import com.softwarepractice.message.Error;
 import com.softwarepractice.message.Success;
 import com.softwarepractice.message.Response;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,18 +34,19 @@ public class WorkerManager {
     @Qualifier("sqlSessionFactory")
     private SqlSessionFactoryBean sqlSessionFactoryBean;
 
-    private static final String path = "D:\\software-practice\\Software-Practice\\uploads";
+    private static final String path = "/tmp";
     private static final String[] format = new String[]{"xls", "xlsx"};
 
     @RequestMapping(value = "/getAllWorkers", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface getAllWorkers(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
-        if (pageNum < 0 || pageSize <= 0)
+        if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
-        else {
+        } else {
             String token = request.getHeader("token");
-            if (!Token.varify(token))
+            if (!Token.varify(token)) {
                 throw new Exception("Token Error");
+            }
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
@@ -65,13 +64,11 @@ public class WorkerManager {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
-        Error fail = new Error("权限不足");
         Success success = new Success();
 
         if (jurisdirction != 0) {
-            return fail;
-        }
-        else {
+            throw new Exception("Permission Denied");
+        } else {
             //init worker
             Worker worker = new Worker();
             worker.setName((String) worker_map.get("name"));
@@ -85,8 +82,7 @@ public class WorkerManager {
             session.commit();
             session.close();
             if (effect != 1) {
-                fail.setErrMsg("添加失败");
-                return fail;
+                throw new Exception("Add Fail");
             } else {
                 return success;
             }
@@ -99,11 +95,11 @@ public class WorkerManager {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
 
-        Error fail = new Error("权限不足");
         Success success = new Success();
 
-        if (jurisdirction != 0)
-            return fail;
+        if (jurisdirction != 0) {
+            throw new Exception("Permission Denied");
+        }
         else {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             DeleteInterface deleteInterface = session.getMapper(DeleteInterface.class);
@@ -112,9 +108,7 @@ public class WorkerManager {
             session.close();
 
             if (effect != 1) {
-                fail.setCode(404);
-                fail.setErrMsg("找不到对应的员工id");
-                return fail;
+                throw new Exception("Delete Fail");
             } else {
                 return success;
             }
@@ -131,8 +125,7 @@ public class WorkerManager {
         }
         Integer jurisdirction = Token.getJurisdirction(token);
         if (jurisdirction != 0) {
-            Error fail = new Error("权限不足");
-            return fail;
+            throw new Exception("Permission Denied");
         }
 
         //获取原始文件名称
@@ -142,8 +135,7 @@ public class WorkerManager {
         String type = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
 
         if (!type.equals(format[0]) && !type.equals(format[1])) {
-            Error error = new Error("上传失败");
-            return error;
+            throw new Exception("Upload Fail");
         }
 
         //设置文件新名字
@@ -156,8 +148,7 @@ public class WorkerManager {
         try {
             mulFile.transferTo(targetFile);
         } catch (IOException e) {
-            Error error = new Error("上传失败");
-            return error;
+            throw new Exception("Upload Fail");
         }
 
         ImportData importData;
@@ -168,12 +159,12 @@ public class WorkerManager {
         }
 
         boolean result = importData.importWorkers();
+        targetFile.delete();
         if (result) {
             Success successMessage = new Success();
             return successMessage;
         } else {
-            Error fail = new Error("上传失败");
-            return fail;
+            throw new Exception("Import Data Fail");
         }
     }
 }

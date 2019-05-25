@@ -9,7 +9,6 @@ import com.softwarepractice.entity.Information;
 import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.PostInformation;
 import com.softwarepractice.function.Token;
-import com.softwarepractice.message.Error;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
 import com.softwarepractice.message.information.InformationsMessage;
@@ -18,12 +17,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -41,24 +38,23 @@ public class InformationManager {
 
     @RequestMapping(value = "/postInformation", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface postInformation(@RequestBody Map<String,Object> data_map,HttpServletRequest request) throws Exception{
+    public MessageInterface postInformation(@RequestBody Map<String, Object> data_map, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
-        if (!Token.varify(token)){
+        if (!Token.varify(token)) {
             throw new Exception("Token Error");
         }
 
-        Integer zone=(Integer) data_map.get("zone");
+        Integer zone = (Integer) data_map.get("zone");
 
         SqlSession sqlSession = sqlSessionFactoryBean.getObject().openSession();
-        SelectInterface selectInterface=sqlSession.getMapper(SelectInterface.class);
-        Worker worker=selectInterface.selectWorkerByWorkerId((Integer) data_map.get("workerId"));
-        if(worker==null){
-            Error error =new Error("推送失败");
-            return error;
+        SelectInterface selectInterface = sqlSession.getMapper(SelectInterface.class);
+        Worker worker = selectInterface.selectWorkerByWorkerId((Integer) data_map.get("workerId"));
+        if (worker == null) {
+            throw new Exception("Some Dependences Not Exist");
         }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Information information=new Information();
+        Information information = new Information();
         information.setTime(simpleDateFormat.format(new Date()));
         information.setContent((String) data_map.get("content"));
         information.setTitle((String) data_map.get("title"));
@@ -68,22 +64,20 @@ public class InformationManager {
         information.setZone(zone);
 
 
-        PostInformation postInformation=new PostInformation();
+        PostInformation postInformation = new PostInformation();
 
-        InsertInterface insertInterface=sqlSession.getMapper(InsertInterface.class);
-        Integer effect=insertInterface.insertInformation(information);
+        InsertInterface insertInterface = sqlSession.getMapper(InsertInterface.class);
+        Integer effect = insertInterface.insertInformation(information);
         sqlSession.commit();
         sqlSession.close();
-        if(effect!=1){
-            Error error =new Error("推送失败");
-            return error;
-        }else{
-            Success success =new Success();
+        if (effect != 1) {
+            throw new Exception("Post Fail");
+        } else {
+            Success success = new Success();
             postInformation.getAccess_token();
-            if(zone.equals(0)){
+            if (zone.equals(0)) {
                 postInformation.postAll(information);
-            }
-            else{
+            } else {
                 postInformation.postOneDorm(information);
             }
             return success;
@@ -91,25 +85,23 @@ public class InformationManager {
     }
 
 
-
     @RequestMapping(value = "/getAllInformations", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface getAllInformations(Integer pageNum, Integer pageSize, HttpServletRequest request) throws Exception {
         if (pageNum < 0 || pageSize <= 0) {
             throw new Exception("Num Error");
-        }
-        else {
+        } else {
             String token = request.getHeader("token");
-            if (!Token.varify(token)){
+            if (!Token.varify(token)) {
                 throw new Exception("Token Error");
             }
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             PageHelper.startPage(pageNum, pageSize);
-            List<InformationsMessage> informationList=selectInterface.findInformationAll();
+            List<InformationsMessage> informationList = selectInterface.findInformationAll();
             PageInfo<InformationsMessage> informationsMessagePageInfo =
                     new PageInfo<>(informationList);
-            Response response=new Response(informationsMessagePageInfo);
+            Response response = new Response(informationsMessagePageInfo);
             session.close();
             return response;
         }
@@ -117,9 +109,8 @@ public class InformationManager {
 
     @RequestMapping(value = "/updateById", method = RequestMethod.POST)
     @ResponseBody
-    public MessageInterface updateInformation(@RequestBody Map<String,Object> data_map, HttpServletRequest request) throws Exception{
-        Error fail=new Error("权限不足");
-        Success success =new Success();
+    public MessageInterface updateInformation(@RequestBody Map<String, Object> data_map, HttpServletRequest request) throws Exception {
+        Success success = new Success();
 
         String token = request.getHeader("token");
         if (!Token.varify(token)) {
@@ -127,20 +118,20 @@ public class InformationManager {
         }
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-        Information information=selectInterface.selectInformationById((Integer)data_map.get("id"));
-        Integer jurisdirction=Token.getJurisdirction(token);
-        if(jurisdirction==0||information.getZone().equals(jurisdirction)){
+        Information information = selectInterface.selectInformationById((Integer) data_map.get("id"));
+        Integer jurisdirction = Token.getJurisdirction(token);
+        if (jurisdirction == 0 || information.getZone().equals(jurisdirction)) {
             information.setTitle((String) data_map.get("title"));
             information.setContent((String) data_map.get("content"));
             information.setTime((String) data_map.get("time"));
-            UpdateInterface updateInterface=session.getMapper(UpdateInterface.class);
+            UpdateInterface updateInterface = session.getMapper(UpdateInterface.class);
             updateInterface.updateInformation(information);
             session.commit();
             session.close();
             return success;
-        }else{
+        } else {
             session.close();
-            return fail;
+            throw new Exception("Permission Denied");
         }
     }
 }
