@@ -5,6 +5,9 @@ import lombok.Data;
 @Data
 public class RepairReply {
     Integer id;
-    Integer r_id;
-    String replycontent;
+    Integer reply_id;
+    String content;
+    Integer reply_type=0;
+    Integer repair_id;
+    String reply_time;
 }

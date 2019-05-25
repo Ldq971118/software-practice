@@ -27,4 +27,12 @@
         WHERE id=#{param1}
     </update>
 
+    <update id="updateRepairNewTime">
+        UPDATE repair SET update_time=now() WHERE id=#{id}
+    </update>
+
+    <update id="updateComplaintNewTime">
+        UPDATE complaint SET update_time=now() WHERE id=#{id}
+    </update>
+
 </mapper>

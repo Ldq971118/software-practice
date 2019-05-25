@@ -1,11 +1,8 @@
 package com.softwarepractice.dao;
 
 import com.softwarepractice.entity.*;
-import com.softwarepractice.message.medium.feeMessage;
-import com.softwarepractice.message.medium.AccommendationMessage;
-import com.softwarepractice.message.medium.ComplaintMessage;
+import com.softwarepractice.message.medium.*;
 import com.softwarepractice.message.information.InformationsMessage;
-import com.softwarepractice.message.medium.RepairMessage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -65,5 +62,9 @@ public interface SelectInterface {
 
     Repair selectRepairByIdAndZone(@Param("id") Integer id,
                                          @Param("jurisdirction") Integer jurisdirction);
+
+    List<Reply> selectRepairReplyById(Integer id);
+
+    List<Reply> selectComplaintReplyById(Integer id);
 //    List<Dormitory> FindDormitoryAll();
 }

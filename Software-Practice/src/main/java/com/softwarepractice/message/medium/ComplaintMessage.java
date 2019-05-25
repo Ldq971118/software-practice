@@ -12,5 +12,5 @@ public class ComplaintMessage {
     private String picture;
     private Integer status;
     private String time;
-    private String replycontent;
+    private String update_time;
 }

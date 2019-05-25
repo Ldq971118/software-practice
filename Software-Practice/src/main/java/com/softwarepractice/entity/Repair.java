@@ -27,4 +27,5 @@ public class Repair {
     private String picture;
     private Integer status;
     private String time;
+    private String update_time;
 }

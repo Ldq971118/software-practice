@@ -5,6 +5,9 @@ import lombok.Data;
 @Data
 public class ComplaintReply {
     Integer id;
-    Integer c_id;
-    String replycontent;
+    Integer reply_id;
+    String content;
+    Integer reply_type=0;
+    Integer complaint_id;
+    String reply_time;
 }

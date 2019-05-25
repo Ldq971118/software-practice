@@ -7,12 +7,14 @@ import com.softwarepractice.dao.SelectInterface;
 import com.softwarepractice.dao.UpdateInterface;
 import com.softwarepractice.entity.Complaint;
 import com.softwarepractice.entity.ComplaintReply;
+import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.Token;
 
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
 import com.softwarepractice.message.medium.ComplaintMessage;
 import com.softwarepractice.message.Response;
+import com.softwarepractice.message.medium.Reply;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -55,6 +59,22 @@ public class ComplaintManager {
         }
     }
 
+    @RequestMapping(value = "/getAllReplyById", method = RequestMethod.GET)
+    @ResponseBody
+    public MessageInterface getAllReplyById(Integer id, HttpServletRequest request) throws Exception {
+        String token = request.getHeader("token");
+        if (!Token.varify(token)) {
+            throw new Exception("Token Error");
+        }
+        SqlSession session = sqlSessionFactoryBean.getObject().openSession();
+        SelectInterface selectInterface = session.getMapper(SelectInterface.class);
+        List<Reply> replyList=selectInterface.selectComplaintReplyById(id);
+        Response response = new Response(replyList);
+        session.close();
+        return response;
+    }
+
+
     @RequestMapping(value = "/changeStatus", method = RequestMethod.GET)
     @ResponseBody
     public MessageInterface changeStatus(Integer id, Integer status, HttpServletRequest request) throws Exception {
@@ -86,15 +106,21 @@ public class ComplaintManager {
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
         InsertInterface insertInterface = session.getMapper(InsertInterface.class);
+        UpdateInterface updateInterface = session.getMapper(UpdateInterface.class);
         Complaint complaint = selectInterface.
                 selectComplaintByIdAndZone(id, Token.getJurisdirction(token));
-        if (complaint == null) {
+        Worker worker = selectInterface.selectWorkerByWorkerId(Token.getUsername(token));
+        if (complaint == null || worker == null) {
             throw new Exception("No Exist");
         } else {
             ComplaintReply complaintReply = new ComplaintReply();
-            complaintReply.setC_id(complaint.getId());
-            complaintReply.setReplycontent(content);
+            complaintReply.setComplaint_id(complaint.getId());
+            complaintReply.setContent(content);
+            complaintReply.setReply_id(worker.getId());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            complaintReply.setReply_time(simpleDateFormat.format(new Date()));
             insertInterface.insertComplaintReply(complaintReply);
+            updateInterface.updateComplaintNewTime(complaint.getId());
         }
         Success success = new Success();
         return success;

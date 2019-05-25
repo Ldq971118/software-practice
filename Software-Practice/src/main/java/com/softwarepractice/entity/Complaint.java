@@ -25,4 +25,5 @@ public class Complaint {
     private String picture;
     private Integer status;
     private String time;
+    private String update_time;
 }

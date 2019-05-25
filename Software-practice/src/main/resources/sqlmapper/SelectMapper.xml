@@ -52,9 +52,9 @@
 
     <select id="findRepairAll" resultType="com.softwarepractice.message.medium.RepairMessage">
         SELECT repair.id,repair.d_id,repair.s_id,repair.telephone,
-        repair.content,repair.picture,repair.status,repair.time,
-        dormitory.zone,dormitory.building,dormitory.room,student.student_id,rreply.replycontent
-        FROM (repair,dormitory,student) LEFT JOIN rreply ON rreply.r_id=repair.id
+        repair.content,repair.picture,repair.status,repair.time,repair.update_time
+        dormitory.zone,dormitory.building,dormitory.room,student.student_id
+        FROM repair,dormitory,student
         WHERE repair.d_id=dormitory.id AND repair.s_id=student.id
         <if test="jurisdirction != 0">
             AND dormitory.zone=#{jurisdirction}
@@ -64,8 +64,8 @@
 
     <select id="findComplaintAll" resultType="com.softwarepractice.message.medium.ComplaintMessage">
         SELECT complaint.id,complaint.s_id,complaint.telephone,complaint.content,
-        complaint.picture,complaint.status,complaint.time,student.student_id,creply.replycontent
-        FROM (complaint,dormitory,accommendation,student) LEFT JOIN creply ON creply.c_id=complaint.id
+        complaint.picture,complaint.status,complaint.time,complaint.update_time,student.student_id
+        FROM complaint,dormitory,accommendation,student
         WHERE complaint.s_id=accommendation.s_id AND complaint.s_id=student.id
         AND accommendation.d_id=dormitory.id
         <if test="jurisdirction != 0">
@@ -197,5 +197,20 @@
             AND dormitory.zone=#{jurisdirction}
         </if>
     </select>
+
+    <select id="selectRepairReplyById" resultType="com.softwarepractice.message.medium.Reply">
+        SELECT name, content, reply_time, reply_type
+        FROM repair_reply, student
+        WHERE repair_reply.repair_id=#{id} and repair_reply.reply_id=student.id
+        ORDER BY reply_time DESC
+    </select>
+
+    <select id="selectComplaintReplyById" resultType="com.softwarepractice.message.medium.Reply">
+        SELECT name, content, reply_time, reply_type
+        FROM complaint_reply, student
+        WHERE complaint_reply.complaint_id=#{id} and complaint_reply.reply_id=student.id
+        ORDER BY reply_time DESC
+    </select>
+
 
 </mapper>

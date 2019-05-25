@@ -11,4 +11,8 @@ public interface UpdateInterface {
     Integer updateRepairStatus(Integer id,Integer status);
 
     Integer updateComplaintStatus(Integer id,Integer status);
+
+    Integer updateRepairNewTime(Integer id);
+
+    Integer updateComplaintNewTime(Integer id);
 }
