@@ -52,7 +52,7 @@
 
     <select id="findRepairAll" resultType="com.softwarepractice.message.medium.RepairMessage">
         SELECT repair.id,repair.d_id,repair.s_id,repair.telephone,
-        repair.content,repair.picture,repair.status,repair.time,repair.update_time
+        repair.content,repair.picture,repair.status,repair.time,repair.update_time,
         dormitory.zone,dormitory.building,dormitory.room,student.student_id
         FROM repair,dormitory,student
         WHERE repair.d_id=dormitory.id AND repair.s_id=student.id
