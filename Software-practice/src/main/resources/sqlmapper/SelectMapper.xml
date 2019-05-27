@@ -199,16 +199,16 @@
     </select>
 
     <select id="selectRepairReplyById" resultType="com.softwarepractice.message.medium.Reply">
-        SELECT name, content, reply_time, reply_type
-        FROM repair_reply, student
-        WHERE repair_reply.repair_id=#{id} and repair_reply.reply_id=student.id
+        SELECT content, reply_time, reply_type
+        FROM repair_reply
+        WHERE repair_reply.repair_id=#{id}
         ORDER BY reply_time DESC
     </select>
 
     <select id="selectComplaintReplyById" resultType="com.softwarepractice.message.medium.Reply">
-        SELECT name, content, reply_time, reply_type
-        FROM complaint_reply, student
-        WHERE complaint_reply.complaint_id=#{id} and complaint_reply.reply_id=student.id
+        SELECT content, reply_time, reply_type
+        FROM complaint_reply
+        WHERE complaint_reply.complaint_id=#{id}
         ORDER BY reply_time DESC
     </select>
 

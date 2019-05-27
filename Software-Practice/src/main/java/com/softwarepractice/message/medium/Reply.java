@@ -1,7 +1,10 @@
 package com.softwarepractice.message.medium;
 
+import lombok.Data;
+
+@Data
 public class Reply {
-    String content;
-    String reply_time;
-    Integer reply_type;
+    private String content;
+    private String reply_time;
+    private Integer reply_type;
 }
