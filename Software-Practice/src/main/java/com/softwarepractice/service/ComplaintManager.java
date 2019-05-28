@@ -111,7 +111,7 @@ public class ComplaintManager {
                 selectComplaintByIdAndZone(id, Token.getJurisdirction(token));
         Worker worker = selectInterface.selectWorkerByWorkerId(Token.getUsername(token));
         if (complaint == null || worker == null) {
-            throw new Exception("No Exist");
+            throw new Exception("Some Dependences Not Exist");
         } else {
             ComplaintReply complaintReply = new ComplaintReply();
             complaintReply.setComplaint_id(complaint.getId());

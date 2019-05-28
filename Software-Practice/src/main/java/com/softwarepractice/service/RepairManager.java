@@ -109,7 +109,7 @@ public class RepairManager {
         Worker worker = selectInterface.selectWorkerByWorkerId(Token.getUsername(token));
 
         if (repair == null || worker == null) {
-            throw new Exception("No Exist");
+            throw new Exception("Some Dependences Not Exist");
         } else {
             RepairReply repairReply = new RepairReply();
             repairReply.setRepair_id(repair.getId());

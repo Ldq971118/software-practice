@@ -67,7 +67,7 @@ public class DormitoryManager {
 
             Dormitory selectDormitory = selectInterface.selectDormitory(dormitory);
             if (selectDormitory == null) {
-                throw new Exception("No Exist");
+                throw new Exception("Some Dependences Not Exist");
             }
 
             //插入学生
@@ -147,7 +147,7 @@ public class DormitoryManager {
             SelectInterface selectInterface = session.getMapper(SelectInterface.class);
             dormitory = selectInterface.selectDormitory(dormitory);
             if (dormitory == null) {
-                throw new Exception("No Exist");
+                throw new Exception("Some Dependences Not Exist");
             } else {
                 Accommendation accommendation = new Accommendation();
                 accommendation.setD_id(dormitory.getId());
