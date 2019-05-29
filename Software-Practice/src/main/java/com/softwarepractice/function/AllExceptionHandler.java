@@ -14,7 +14,7 @@ public class AllExceptionHandler {
     @ResponseBody
     public MessageInterface mybatisExceptionHandler(RuntimeException t){
         Error error = new Error("输入的参数存在错误");
-        System.out.println(t.getMessage());
+//        System.out.println(t.getMessage());
         return error;
     }
 
@@ -48,7 +48,7 @@ public class AllExceptionHandler {
         }else if(t.getMessage().equals("Delete Fail")){
             error = new Error("删除失败");
         }else {}
-        System.out.println(t.getMessage());
+//        System.out.println(t.getMessage());
         return error;
     }
 }

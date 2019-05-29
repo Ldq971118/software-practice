@@ -13,7 +13,7 @@ import com.softwarepractice.entity.Worker;
 import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
-import com.softwarepractice.message.Response;
+import com.softwarepractice.message.medium.Response;
 import com.softwarepractice.message.questionnaire.Basic;
 import com.softwarepractice.message.questionnaire.OptionsData;
 import com.softwarepractice.message.questionnaire.QuestionnaireData;

@@ -13,7 +13,7 @@ import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
 import com.softwarepractice.message.medium.ComplaintMessage;
-import com.softwarepractice.message.Response;
+import com.softwarepractice.message.medium.Response;
 import com.softwarepractice.message.medium.Reply;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;

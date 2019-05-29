@@ -12,7 +12,7 @@ import com.softwarepractice.function.Token;
 import com.softwarepractice.message.MessageInterface;
 import com.softwarepractice.message.Success;
 import com.softwarepractice.message.information.InformationsMessage;
-import com.softwarepractice.message.Response;
+import com.softwarepractice.message.medium.Response;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @RequestMapping("/api/web/information")
