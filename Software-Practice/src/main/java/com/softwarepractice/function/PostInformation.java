@@ -78,7 +78,7 @@ public class PostInformation {
             URL url = new URL("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=" + access_token);
             SelectInterface selectInterface = sqlSession.getMapper(SelectInterface.class);
             List<Student> students = selectInterface.findStudentBySome(information.getZone(),
-                    information.getBuilding(),information.getRoom());
+                    information.getBuilding(), information.getRoom());
             if (students == null)
                 return;
             for (int i = 0; i < students.size(); i++) {
@@ -89,11 +89,11 @@ public class PostInformation {
                 List<Push> pushs = selectInterface.findPushBySid(student.getId());
                 if ((pushs.isEmpty()) || (student.getOpen_id() == null))
                     continue;
-                DeleteInterface deleteInterface=sqlSession.getMapper(DeleteInterface.class);
+                DeleteInterface deleteInterface = sqlSession.getMapper(DeleteInterface.class);
                 Push push = pushs.get(0);
                 deleteInterface.deletePushById(push.getId());
                 sqlSession.commit();
-                if(push.getForm_id() == null)
+                if (push.getForm_id() == null)
                     continue;
                 wxMssVo.setTouser(student.getOpen_id());//用户openid
                 wxMssVo.setTemplate_id("NIVGuys6ewhHDqYBCbUcvfQGBo648Y7eebQdx6mmswg");//模版id
@@ -114,7 +114,7 @@ public class PostInformation {
                 m.put("keyword3", keyword3);
                 wxMssVo.setData(m);
 
-                HttpClient client =HttpClientBuilder.create().build();//构建一个Client
+                HttpClient client = HttpClientBuilder.create().build();//构建一个Client
                 HttpPost post = new HttpPost(url.toString());//构建一个POST请求
                 StringEntity s = new StringEntity(JSON.toJSONString(wxMssVo), "UTF-8");
                 s.setContentEncoding("UTF-8");
@@ -150,11 +150,11 @@ public class PostInformation {
                 if ((pushs.isEmpty()) || (student.getOpen_id() == null))
                     continue;
 
-                DeleteInterface deleteInterface=sqlSession.getMapper(DeleteInterface.class);
+                DeleteInterface deleteInterface = sqlSession.getMapper(DeleteInterface.class);
                 Push push = pushs.get(0);
                 deleteInterface.deletePushById(push.getId());
                 sqlSession.commit();
-                if(push.getForm_id() == null)
+                if (push.getForm_id() == null)
                     continue;
                 wxMssVo.setTouser(student.getOpen_id());//用户openid
                 wxMssVo.setTemplate_id("NIVGuys6ewhHDqYBCbUcvfQGBo648Y7eebQdx6mmswg");//模版id
@@ -176,7 +176,7 @@ public class PostInformation {
                 wxMssVo.setData(m);
 
 
-                HttpClient client =HttpClientBuilder.create().build();//构建一个Client
+                HttpClient client = HttpClientBuilder.create().build();//构建一个Client
                 HttpPost post = new HttpPost(url.toString());//构建一个POST请求
                 StringEntity s = new StringEntity(JSON.toJSONString(wxMssVo), "UTF-8");
                 s.setContentEncoding("UTF-8");

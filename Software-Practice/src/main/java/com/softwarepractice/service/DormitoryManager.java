@@ -169,7 +169,7 @@ public class DormitoryManager {
     public MessageInterface deleteAccommendation(Integer id, HttpServletRequest request) throws Exception {
         String token = request.getHeader("token");
         Integer jurisdirction = Token.getJurisdirction(token);
-        Success success=new Success();
+        Success success = new Success();
 
         if (jurisdirction != 0) {
             throw new Exception("Permission Denied");

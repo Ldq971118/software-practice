@@ -4,10 +4,10 @@ import lombok.Data;
 
 /**
  * CREATE TABLE `accommendation` (
- *   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
- *   `s_id` int(11) NOT NULL COMMENT '学生编号',
- *   `d_id` int(11) NOT NULL COMMENT '宿舍编号',
- *   PRIMARY KEY (`id`)
+ * `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
+ * `s_id` int(11) NOT NULL COMMENT '学生编号',
+ * `d_id` int(11) NOT NULL COMMENT '宿舍编号',
+ * PRIMARY KEY (`id`)
  * ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  */
 

@@ -99,8 +99,7 @@ public class WorkerManager {
 
         if (jurisdirction != 0) {
             throw new Exception("Permission Denied");
-        }
-        else {
+        } else {
             SqlSession session = sqlSessionFactoryBean.getObject().openSession();
             DeleteInterface deleteInterface = session.getMapper(DeleteInterface.class);
             Integer effect = deleteInterface.deleteWorkerById(id);

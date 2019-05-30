@@ -61,7 +61,7 @@ public interface SelectInterface {
                                          @Param("jurisdirction") Integer jurisdirction);
 
     Repair selectRepairByIdAndZone(@Param("id") Integer id,
-                                         @Param("jurisdirction") Integer jurisdirction);
+                                   @Param("jurisdirction") Integer jurisdirction);
 
     List<Reply> selectRepairReplyById(Integer id);
 

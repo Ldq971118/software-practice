@@ -68,7 +68,7 @@ public class ComplaintManager {
         }
         SqlSession session = sqlSessionFactoryBean.getObject().openSession();
         SelectInterface selectInterface = session.getMapper(SelectInterface.class);
-        List<Reply> replyList=selectInterface.selectComplaintReplyById(id);
+        List<Reply> replyList = selectInterface.selectComplaintReplyById(id);
         Response response = new Response(replyList);
         session.close();
         return response;

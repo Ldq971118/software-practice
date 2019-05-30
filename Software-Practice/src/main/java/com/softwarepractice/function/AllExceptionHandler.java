@@ -12,7 +12,7 @@ public class AllExceptionHandler {
 
     @ExceptionHandler({RuntimeException.class})
     @ResponseBody
-    public MessageInterface mybatisExceptionHandler(RuntimeException t){
+    public MessageInterface mybatisExceptionHandler(RuntimeException t) {
         Error error = new Error("输入的参数存在错误");
 //        System.out.println(t.getMessage());
         return error;
@@ -27,27 +27,28 @@ public class AllExceptionHandler {
             error = new Error("参数pageNum或pageSize错误");
         } else if (t.getMessage().equals("Token Error")) {
             error = new Error("Token非法");
-        } else if(t.getMessage().equals("Change Fail")){
+        } else if (t.getMessage().equals("Change Fail")) {
             error = new Error("修改失败");
-        }else if(t.getMessage().equals("No Exist")){
+        } else if (t.getMessage().equals("No Exist")) {
             error = new Error("内容不存在");
-        }else if(t.getMessage().equals("Permission Denied")){
+        } else if (t.getMessage().equals("Permission Denied")) {
             error = new Error("权限不足，需要超级管理员权限");
-        }else if(t.getMessage().equals("Add Fail")){
+        } else if (t.getMessage().equals("Add Fail")) {
             error = new Error("添加失败");
-        }else if(t.getMessage().equals("Upload Fail")){
+        } else if (t.getMessage().equals("Upload Fail")) {
             error = new Error("文件上传失败");
-        }else if(t.getMessage().equals("Import Data Fail")){
+        } else if (t.getMessage().equals("Import Data Fail")) {
             error = new Error("数据导入失败");
-        }else if(t.getMessage().equals("Some Dependences Not Exist")){
+        } else if (t.getMessage().equals("Some Dependences Not Exist")) {
             error = new Error("完成该功能的某些依赖不存在");
-        }else if(t.getMessage().equals("Post Fail")){
+        } else if (t.getMessage().equals("Post Fail")) {
             error = new Error("信息推送失败");
-        }else if(t.getMessage().equals("Login Fail")){
+        } else if (t.getMessage().equals("Login Fail")) {
             error = new Error("用户名或密码错误");
-        }else if(t.getMessage().equals("Delete Fail")){
+        } else if (t.getMessage().equals("Delete Fail")) {
             error = new Error("删除失败");
-        }else {}
+        } else {
+        }
 //        System.out.println(t.getMessage());
         return error;
     }
