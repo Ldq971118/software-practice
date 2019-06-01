@@ -91,10 +91,14 @@ public class DormitoryManager {
             Accommendation accommendation = new Accommendation();
             accommendation.setD_id(selectDormitory.getId());
             accommendation.setS_id(student.getId());
-
-            effect = insertInterface.insertAccommendation(accommendation);
-            if (effect != 1) {
-                throw new Exception("Add Fail");
+            Accommendation accomExist = selectInterface.selectAccommendation(accommendation);
+            if (accomExist != null) {
+                throw new Exception("Add Is Exist");
+            } else {
+                effect = insertInterface.insertAccommendation(accommendation);
+                if (effect != 1) {
+                    throw new Exception("Add Fail");
+                }
             }
             session.commit();
             session.close();

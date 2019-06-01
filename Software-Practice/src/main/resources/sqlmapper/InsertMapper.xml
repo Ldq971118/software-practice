@@ -51,12 +51,12 @@
 
     <insert id="insertComplaintReply" parameterType="com.softwarepractice.entity.ComplaintReply"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO creply VALUES(null,#{reply_id},#{content},#{reply_type},#{complaint_id},#{reply_time})
+        INSERT INTO complaint_reply VALUES(null,#{reply_id},#{content},#{reply_type},#{complaint_id},#{reply_time})
     </insert>
 
     <insert id="insertRepairReply" parameterType="com.softwarepractice.entity.RepairReply"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO creply VALUES(null,#{reply_id},#{content},#{reply_type},#{repair_id},#{reply_time})
+        INSERT INTO repair_reply VALUES(null,#{reply_id},#{content},#{reply_type},#{repair_id},#{reply_time})
     </insert>
 
 </mapper>

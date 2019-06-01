@@ -174,7 +174,7 @@
     </select>
 
     <select id="selectAccommendation" resultType="com.softwarepractice.entity.Accommendation">
-        SELECT * FROM accommendation WHERE s_id=#{s_id} AND d_id=#{d_id}
+        SELECT * FROM accommendation WHERE s_id=#{s_id}
     </select>
 
     <select id="selectComplaintByIdAndZone" resultType="com.softwarepractice.entity.Complaint">

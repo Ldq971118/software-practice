@@ -14,7 +14,7 @@ public class AllExceptionHandler {
     @ResponseBody
     public MessageInterface mybatisExceptionHandler(RuntimeException t) {
         Error error = new Error("输入的参数存在错误");
-//        System.out.println(t.getMessage());
+        System.out.println(t.getMessage());
         return error;
     }
 
@@ -47,9 +47,11 @@ public class AllExceptionHandler {
             error = new Error("用户名或密码错误");
         } else if (t.getMessage().equals("Delete Fail")) {
             error = new Error("删除失败");
+        } else if (t.getMessage().equals("Add Is Exist")) {
+            error = new Error("该信息已经存在，不可重复添加");
         } else {
         }
-//        System.out.println(t.getMessage());
+        System.out.println(t.getMessage());
         return error;
     }
 }
